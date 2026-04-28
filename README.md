@@ -212,9 +212,10 @@ Esta demostración incluye configuraciones básicas de seguridad. El sistema com
 
 > **"Para evaluación del código completo, modelos y implementación detallada, es necesario establecer un acuerdo de colaboración o licenciamiento, ya que constituyen propiedad intelectual del proyecto."**
 
-**Desarrollado por:** [Tu Nombre]  
-**Email de contacto:** [tu-email@ejemplo.com]  
-**LinkedIn:** [tu-linkedin]
+**Desarrollado por:** Raquel Martín Esbec 
+**Email de contacto:** raquelmartinesbec@gmail.com
+**LinkedIn:** https://www.linkedin.com/in/raquel-martín-esbec-
+49970a77
 
 ---
 
