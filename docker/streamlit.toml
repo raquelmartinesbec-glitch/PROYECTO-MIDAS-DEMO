@@ -10,7 +10,7 @@
 address = "0.0.0.0"
 baseUrlPath = ""
 enableCORS = false
-enableXsrfProtection = true
+enableXsrfProtection = false
 headless = true
 
 [browser]

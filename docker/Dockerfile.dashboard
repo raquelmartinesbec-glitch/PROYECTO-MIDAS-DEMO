@@ -23,10 +23,11 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    STREAMLIT_SERVER_PORT=8501 \
     STREAMLIT_SERVER_ADDRESS=0.0.0.0 \
+    STREAMLIT_SERVER_HEADLESS=true \
+    STREAMLIT_SERVER_ENABLE_CORS=false \
+    STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION=false \
     STREAMLIT_BROWSER_GATHER_USAGE_STATS=false \
-    STREAMLIT_GLOBAL_DEV_MODE=false \
     DEMO_MODE=true
 
 # ── Dependencias del sistema ───────────────────────────────────────────────────
@@ -44,13 +45,12 @@ WORKDIR /app
 COPY requirements/dashboard.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# ── Configuración de Streamlit ─────────────────────────────────────────────────
-# Copia configuración básica de Streamlit
-COPY docker/streamlit.toml /app/.streamlit/config.toml
-
 # ── Estructura de directorios ──────────────────────────────────────────────────
-# Recreamos la estructura del dashboard real
-RUN mkdir -p /app/dashboard /app/assets /app/config /app/utils
+RUN mkdir -p /app/dashboard/.streamlit /app/assets /app/config /app/utils
+
+# ── Configuración de Streamlit ─────────────────────────────────────────────────
+# Config en CWD del proceso: /app/dashboard/.streamlit/
+COPY docker/streamlit.toml /app/dashboard/.streamlit/config.toml
 
 # ── Copiar código de demostración ──────────────────────────────────────────────
 # En el proyecto real, aquí va toda la lógica del dashboard
