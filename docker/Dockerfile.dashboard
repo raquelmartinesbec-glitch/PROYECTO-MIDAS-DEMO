@@ -23,7 +23,6 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    STREAMLIT_SERVER_ADDRESS=0.0.0.0 \
     STREAMLIT_SERVER_HEADLESS=true \
     STREAMLIT_SERVER_ENABLE_CORS=false \
     STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION=false \
@@ -45,15 +44,7 @@ WORKDIR /app
 COPY requirements/dashboard.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# ── Estructura de directorios ──────────────────────────────────────────────────
-RUN mkdir -p /app/dashboard/.streamlit /app/assets /app/config /app/utils
-
-# ── Configuración de Streamlit ─────────────────────────────────────────────────
-# Config en CWD del proceso: /app/dashboard/.streamlit/
-COPY docker/streamlit.toml /app/dashboard/.streamlit/config.toml
-
 # ── Copiar código de demostración ──────────────────────────────────────────────
-# En el proyecto real, aquí va toda la lógica del dashboard
 COPY dashboard/ ./dashboard/
 
 # ── Seguridad: Usuario no privilegiado ────────────────────────────────────────
@@ -62,21 +53,7 @@ RUN useradd --create-home --shell /bin/bash appuser \
 USER appuser
 
 # ── Puerto y arranque ─────────────────────────────────────────────────────────
-EXPOSE 8501
+EXPOSE 8080
 
 WORKDIR /app/dashboard
-CMD ["sh", "-c", "streamlit run app.py --server.port ${PORT:-8501} --server.address 0.0.0.0 --server.headless true"]
-
-# ── Información de la imagen ───────────────────────────────────────────────────
-# Esta imagen de demostración muestra:
-# • Dashboard web interactivo con Streamlit  
-# • Visualizaciones responsivas y profesionales
-# • Configuración optimizada para contenedores
-# • Health checks automáticos
-#
-# El dashboard completo incluye:
-# • Análisis de tendencias estacionales
-# • Métricas de ROI y ahorro operativo  
-# • Alertas inteligentes y recomendaciones
-# • Exportación de reportes automáticos
-# • Integración con sistemas de notificaciones
+CMD ["sh", "-c", "streamlit run app.py --server.port ${PORT:-8501} --server.address 0.0.0.0 --server.headless true --server.enableCORS false --server.enableXsrfProtection false"]
