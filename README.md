@@ -54,7 +54,20 @@ graph TB
 
 ---
 
-## ⚡ **Inicio Rápido para Evaluación**
+## 🌐 **Demo en Vivo — Acceso Inmediato**
+
+> Puedes probar la API directamente sin instalar nada:
+
+| Servicio | URL en Producción | Descripción |
+|----------|-------------------|-------------|
+| **API Docs** | [proyecto-midas-demo-production.up.railway.app/docs](https://proyecto-midas-demo-production.up.railway.app/docs) | Swagger UI interactivo |
+| **Health** | [proyecto-midas-demo-production.up.railway.app/health](https://proyecto-midas-demo-production.up.railway.app/health) | Estado del sistema |
+| **Predicción completa** | [proyecto-midas-demo-production.up.railway.app/predict/full](https://proyecto-midas-demo-production.up.railway.app/predict/full) | Las 3 predicciones en JSON |
+| **Modelos** | [proyecto-midas-demo-production.up.railway.app/models](https://proyecto-midas-demo-production.up.railway.app/models) | Info de modelos ML |
+
+---
+
+## ⚡ **Inicio Rápido (Local con Docker)**
 
 ### **Prerrequisitos**
 - Docker & Docker Compose instalado
@@ -63,7 +76,7 @@ graph TB
 
 ### **1. Clonar y preparar**
 ```bash
-git clone [este-repositorio]
+git clone https://github.com/raquelmartinesbec-glitch/PROYECTO-MIDAS-DEMO.git
 cd PROYECTO-MIDAS-DEMO
 cp .env.example .env
 ```
@@ -78,8 +91,8 @@ docker compose ps
 ```
 
 ### **3. Acceder a la demostración**
-| Servicio | URL | Descripción |
-|----------|-----|-------------|
+| Servicio | URL Local | Descripción |
+|----------|-----------|-------------|
 | **API Docs** | http://localhost:8000/docs | Documentación interactiva de la API |
 | **Dashboard** | http://localhost:8501 | Interfaz principal del sistema |
 
