@@ -1,0 +1,17 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# railway.toml — Servicio API (midas-api)
+#
+# Servicio 1 de 2. Ver railway.dashboard.toml para el Dashboard.
+# Railway usará este archivo por defecto en el servicio API.
+# ══════════════════════════════════════════════════════════════════════════════
+
+[build]
+builder = "nixpacks"
+buildCommand = "pip install -r requirements-demo.txt"
+
+[deploy]
+startCommand = "uvicorn demo_api.demo_main:app --host 0.0.0.0 --port $PORT"
+healthcheckPath = "/health"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3

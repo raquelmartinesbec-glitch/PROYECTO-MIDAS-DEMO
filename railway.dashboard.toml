@@ -1,0 +1,22 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# railway.dashboard.toml — Servicio Dashboard (midas-dashboard)
+#
+# Servicio 2 de 2. Ver railway.toml para la API.
+#
+# En Railway UI → Service Settings → Source → Config file path:
+#   railway.dashboard.toml
+#
+# Variable de entorno requerida en este servicio:
+#   API_URL = https://<dominio-público-del-servicio-api>
+# ══════════════════════════════════════════════════════════════════════════════
+
+[build]
+builder = "nixpacks"
+buildCommand = "pip install -r requirements-dashboard-demo.txt"
+
+[deploy]
+startCommand = "streamlit run demo_dashboard/demo_app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true"
+healthcheckPath = "/_stcore/health"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3

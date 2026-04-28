@@ -1,0 +1,86 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# Dockerfile.dashboard — Dashboard de Demostración para Proyecto MIDAS  
+#
+# PROPÓSITO:
+#   Dockerfile que muestra la estructura del dashboard Streamlit de producción
+#   con visualizaciones simplificadas para demostración.
+#
+# NOTA DE PRESENTACIÓN:
+#   El dashboard real incluye visualizaciones avanzadas, análisis de ROI,
+#   y métricas de negocio detalladas no expuestas en esta demo.
+# ══════════════════════════════════════════════════════════════════════════════
+
+FROM python:3.11-slim AS base
+
+# Metadatos de la imagen
+LABEL maintainer="Proyecto MIDAS" \
+      description="Dashboard de Demostración - Sistema de Predicción para Restaurante" \
+      version="demo-1.0.0" \
+      demo="true"
+
+# Variables de entorno optimizadas para Streamlit en contenedor
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    STREAMLIT_SERVER_PORT=8501 \
+    STREAMLIT_SERVER_ADDRESS=0.0.0.0 \
+    STREAMLIT_BROWSER_GATHER_USAGE_STATS=false \
+    STREAMLIT_GLOBAL_DEV_MODE=false \
+    DEMO_MODE=true
+
+# ── Dependencias del sistema ───────────────────────────────────────────────────
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        curl \
+        ca-certificates \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# ── Configurar directorio de trabajo ───────────────────────────────────────────
+WORKDIR /app
+
+# ── Instalar dependencias Python ───────────────────────────────────────────────
+COPY requirements-dashboard-demo.txt ./requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# ── Configuración de Streamlit ─────────────────────────────────────────────────
+# Copia configuración básica de Streamlit
+COPY docker/streamlit_config_demo.toml /app/.streamlit/config.toml
+
+# ── Estructura de directorios ──────────────────────────────────────────────────
+# Recreamos la estructura del dashboard real
+RUN mkdir -p /app/{dashboard,assets,config,utils} \
+    && echo "# Demo dashboard structure" > /app/dashboard/README.md
+
+# ── Copiar código de demostración ──────────────────────────────────────────────
+# En el proyecto real, aquí va toda la lógica del dashboard
+COPY demo_dashboard/ ./dashboard/
+
+# ── Seguridad: Usuario no privilegiado ────────────────────────────────────────
+RUN useradd --create-home --shell /bin/bash appuser \
+    && chown -R appuser:appuser /app
+USER appuser
+
+# ── Puerto y arranque ─────────────────────────────────────────────────────────
+EXPOSE 8501
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8501/_stcore/health')" || exit 1
+
+WORKDIR /app/dashboard
+CMD ["streamlit", "run", "demo_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+
+# ── Información de la imagen ───────────────────────────────────────────────────
+# Esta imagen de demostración muestra:
+# • Dashboard web interactivo con Streamlit  
+# • Visualizaciones responsivas y profesionales
+# • Configuración optimizada para contenedores
+# • Health checks automáticos
+#
+# El dashboard completo incluye:
+# • Análisis de tendencias estacionales
+# • Métricas de ROI y ahorro operativo  
+# • Alertas inteligentes y recomendaciones
+# • Exportación de reportes automáticos
+# • Integración con sistemas de notificaciones

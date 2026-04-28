@@ -1,0 +1,36 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# requirements-dashboard-demo.txt — Dependencias para Dashboard de demostración
+#
+# NOTA: Versión simplificada de las dependencias reales del dashboard.
+# El dashboard completo incluye librerías avanzadas de visualización,
+# análisis de datos y exportación no mostradas aquí.
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ── Framework dashboard ────────────────────────────────────────────────────────
+streamlit==1.28.1
+
+# ── Visualizaciones básicas ────────────────────────────────────────────────────
+plotly==5.17.0
+matplotlib==3.8.2
+
+# ── Manipulación de datos básica ───────────────────────────────────────────────
+pandas==2.1.3
+numpy==1.25.2
+
+# ── Cliente HTTP para API ──────────────────────────────────────────────────────
+requests==2.31.0
+httpx==0.25.2
+
+# ── Utilidades ─────────────────────────────────────────────────────────────────
+python-dateutil==2.8.2
+pytz==2023.3
+
+# NOTA: El dashboard completo incluye librerías adicionales como:
+# • seaborn (visualizaciones estadísticas avanzadas)
+# • bokeh (gráficos interactivos complejos)  
+# • altair (gramática de gráficos)
+# • openpyxl (exportación Excel)
+# • reportlab (generación PDF)
+# • pillow (procesamiento de imágenes)
+# • streamlit-authenticator (autenticación)
+# • streamlit-aggrid (tablas avanzadas)

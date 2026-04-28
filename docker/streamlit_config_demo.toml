@@ -1,0 +1,52 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# streamlit_config_demo.toml — Configuración de Streamlit para demostración
+#
+# PROPÓSITO: Configuración básica que muestra la estructura de configuración
+#           sin exponer configuraciones específicas de producción.
+# ══════════════════════════════════════════════════════════════════════════════
+
+[server]
+# Configuración del servidor para contenedores Docker
+port = 8501
+address = "0.0.0.0"
+baseUrlPath = ""
+enableCORS = false
+enableXsrfProtection = true
+
+# Configuración de health check
+headless = true
+
+[browser]
+# Deshabilitar estadísticas de uso en demostración
+gatherUsageStats = false
+serverAddress = "localhost"
+serverPort = 8501
+
+[global]
+# Modo de desarrollo deshabilitado para demo
+developmentMode = false
+unitTest = false
+
+# Configuración de logging básica
+logLevel = "info"
+
+[theme]
+# Tema básico para la demostración (personalizable en producción)
+primaryColor = "#FF6B6B"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F0F2F6"
+textColor = "#262730"
+
+[client]
+# Configuración del cliente
+toolbarMode = "minimal"
+showErrorDetails = false
+
+# NOTA: La configuración de producción incluye:
+# • Configuraciones de autenticación y autorización
+# • SSL/TLS settings para conexiones seguras
+# • Configuración de cache y optimización de rendimiento
+# • Integración con sistemas de monitoreo
+# • Configuraciones de rate limiting
+# • Settings específicos de deployment (load balancer, proxy)
+# • Configuración de logging avanzado con structured logs

@@ -1,0 +1,23 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# requirements-dashboard.txt — Dependencias para Dashboard MIDAS actualizado
+#
+# Instalación: pip install -r requirements-dashboard.txt
+# Ejecución: streamlit run midas_dashboard.py
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ── Framework Dashboard Principal ──────────────────────────────────────────────
+streamlit==1.28.1
+
+# ── Visualizaciones Interactivas ───────────────────────────────────────────────
+plotly==5.17.0
+
+# ── Manipulación y Análisis de Datos ───────────────────────────────────────────
+pandas==2.1.3
+numpy==1.25.2
+
+# ── Cliente HTTP para conectar con API ─────────────────────────────────────────
+requests==2.31.0
+
+# ── Dependencias adicionales requeridas por Streamlit ─────────────────────────
+altair>=4.0.0
+pillow>=7.1.0

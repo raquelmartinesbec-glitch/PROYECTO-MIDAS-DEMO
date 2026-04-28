@@ -1,0 +1,32 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# requirements-demo.txt — Dependencias básicas para API de demostración
+#
+# NOTA: Esta es una versión simplificada de las dependencias reales.
+# El proyecto completo incluye librerías adicionales para ML, validación,
+# monitoreo, seguridad y optimización no mostradas aquí.
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ── Framework web y API ────────────────────────────────────────────────────────
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# ── Validación y serialización ─────────────────────────────────────────────────
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# ── Utilidades básicas ─────────────────────────────────────────────────────────
+python-multipart==0.0.6
+python-json-logger==2.0.7
+
+# ── Fechas y tiempo ────────────────────────────────────────────────────────────
+python-dateutil==2.8.2
+
+# NOTA: El proyecto real incluye dependencias adicionales como:
+# • scikit-learn (modelos de Machine Learning)
+# • pandas, numpy (procesamiento de datos)
+# • sqlalchemy (ORM y gestión de base de datos)
+# • redis (cache y sessions)
+# • prometheus-client (métricas)
+# • structlog (logging estructurado)
+# • cryptography (seguridad)
+# • httpx (cliente HTTP asíncrono)

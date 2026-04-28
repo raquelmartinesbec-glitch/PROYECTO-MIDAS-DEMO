@@ -1,0 +1,137 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# docker-compose.yml — Infraestructura de Presentación - Proyecto MIDAS
+# 
+# NOTA IMPORTANTE: Esta es una versión de demostración que muestra la arquitectura
+# del sistema sin exponer el código fuente completo por motivos de propiedad intelectual.
+#
+# SERVICIOS DE DEMOSTRACIÓN:
+#   · midas-api        : API FastAPI simulada (puerto 8000)
+#   · midas-dashboard  : Dashboard Streamlit de demostración (puerto 8501)
+#   · postgres         : PostgreSQL para estructura de datos (puerto 5432)
+#   · n8n              : Motor de automatización (puerto 5678) - OPCIONAL
+#
+# INICIO RÁPIDO PARA EVALUACIÓN:
+#   # 1. Levantar servicios básicos:
+#   docker compose up midas-api midas-dashboard -d
+#
+#   # 2. Acceder a la demostración:
+#   #    API Demo:     http://localhost:8000/docs
+#   #    Dashboard:    http://localhost:8501
+#   
+#   # 3. Para ver automatización completa:
+#   docker compose --profile automation up -d
+#
+# ARQUITECTURA REAL:
+#   El sistema completo incluye modelos de Machine Learning, pipelines de datos,
+#   integración con Google Calendar y suite de tests no mostrados en esta demo.
+# ══════════════════════════════════════════════════════════════════════════════
+
+services:
+
+  # ── API de Demostración ────────────────────────────────────────────────────
+  midas-api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    container_name: midas-api-demo
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    networks:
+      - midas_demo_net
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DEMO_MODE=true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 20s
+      retries: 3
+
+  # ── Dashboard de Demostración ──────────────────────────────────────────────
+  midas-dashboard:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dashboard
+    container_name: midas-dashboard-demo
+    restart: unless-stopped
+    ports:
+      - "8501:8501"
+    networks:
+      - midas_demo_net
+    environment:
+      # URL interna del servicio API dentro de la red Docker
+      - API_URL=http://midas-api:8000
+      - DEMO_MODE=true
+    depends_on:
+      midas-api:
+        condition: service_healthy
+
+  # ── PostgreSQL — Estructura de Base de Datos ──────────────────────────────
+  # Nota: Configuración básica para mostrar la arquitectura de datos
+  postgres:
+    image: postgres:16-alpine
+    container_name: midas-postgres-demo
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    networks:
+      - midas_demo_net
+    environment:
+      POSTGRES_USER: demo_user
+      POSTGRES_PASSWORD: demo_password
+      POSTGRES_DB: midas_demo_db
+    volumes:
+      # Script básico de inicialización para demostración
+      - ./db/demo_init.sql:/docker-entrypoint-initdb.d/01_demo_init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U demo_user -d midas_demo_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  # ── n8n — Motor de Automatización (PERFIL OPCIONAL) ────────────────────────
+  # Para evaluadores que quieran ver las capacidades de automatización
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: midas-n8n-demo
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    networks:
+      - midas_demo_net
+    environment:
+      # Configuración básica de demostración
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=http://localhost:5678/
+      # Autenticación básica habilitada para demo
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=demo
+      - N8N_BASIC_AUTH_PASSWORD=midas2024
+      # URL de la API Midas (disponible dentro de la red Docker)
+      - MIDAS_API_URL=http://midas-api:8000
+    volumes:
+      - n8n_demo_data:/home/node/.n8n
+    depends_on:
+      midas-api:
+        condition: service_healthy
+    profiles:
+      - automation
+
+
+# ── Volúmenes de Demostración ──────────────────────────────────────────────────
+volumes:
+  n8n_demo_data:
+    driver: local
+    # Almacena configuración básica de workflows de demostración
+
+
+# ── Red de Demostración ────────────────────────────────────────────────────────
+networks:
+  midas_demo_net:
+    driver: bridge
+    # Red aislada para servicios de demostración
