@@ -64,11 +64,8 @@ USER appuser
 # ── Puerto y arranque ─────────────────────────────────────────────────────────
 EXPOSE 8501
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8501/_stcore/health')" || exit 1
-
 WORKDIR /app/dashboard
-CMD ["sh", "-c", "streamlit run app.py --server.port ${PORT:-8501} --server.address 0.0.0.0"]
+CMD ["sh", "-c", "streamlit run app.py --server.port ${PORT:-8501} --server.address 0.0.0.0 --server.headless true"]
 
 # ── Información de la imagen ───────────────────────────────────────────────────
 # Esta imagen de demostración muestra:

@@ -19,3 +19,7 @@ healthcheckPath = "/_stcore/health"
 healthcheckTimeout = 300
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
+
+[[deploy.environmentVariables]]
+name = "STREAMLIT_SERVER_HEADLESS"
+value = "true"
