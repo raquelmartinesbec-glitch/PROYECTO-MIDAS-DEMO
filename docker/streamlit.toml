@@ -6,26 +6,18 @@
 # ══════════════════════════════════════════════════════════════════════════════
 
 [server]
-# Configuración del servidor para contenedores Docker
-port = 8501
+# Puerto gestionado por Railway via variable PORT en CMD
 address = "0.0.0.0"
 baseUrlPath = ""
 enableCORS = false
 enableXsrfProtection = true
-
-# Configuración de health check
 headless = true
 
 [browser]
-# Deshabilitar estadísticas de uso en demostración
 gatherUsageStats = false
-serverAddress = "localhost"
-serverPort = 8501
 
 [global]
-# Modo de desarrollo deshabilitado para demo
 developmentMode = false
-unitTest = false
 
 # Configuración de logging básica
 logLevel = "info"
