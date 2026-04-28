@@ -11,11 +11,10 @@
 # ══════════════════════════════════════════════════════════════════════════════
 
 [build]
-builder = "nixpacks"
-buildCommand = "python -m pip install -r requirements/dashboard.txt"
+builder = "dockerfile"
+dockerfilePath = "docker/Dockerfile.dashboard"
 
 [deploy]
-startCommand = "streamlit run dashboard/app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true"
 healthcheckPath = "/_stcore/health"
 healthcheckTimeout = 300
 restartPolicyType = "on_failure"
