@@ -12,7 +12,7 @@
 
 [build]
 builder = "nixpacks"
-buildCommand = "pip install -r requirements/dashboard.txt"
+buildCommand = "python -m pip install -r requirements/dashboard.txt"
 
 [deploy]
 startCommand = "streamlit run dashboard/app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true"
