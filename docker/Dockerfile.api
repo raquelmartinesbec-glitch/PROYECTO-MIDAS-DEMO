@@ -43,7 +43,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # ── Estructura de directorios básica ───────────────────────────────────────────
 # Recreamos la estructura del proyecto real sin el contenido sensible
-RUN mkdir -p /app/{api,models,config} \
+RUN mkdir -p /app/api /app/models /app/config \
     && echo "# Demo structure" > /app/models/README.md
 
 # ── Copiar código de demostración ──────────────────────────────────────────────

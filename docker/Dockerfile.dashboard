@@ -50,8 +50,7 @@ COPY docker/streamlit.toml /app/.streamlit/config.toml
 
 # ── Estructura de directorios ──────────────────────────────────────────────────
 # Recreamos la estructura del dashboard real
-RUN mkdir -p /app/{dashboard,assets,config,utils} \
-    && echo "# Demo dashboard structure" > /app/dashboard/README.md
+RUN mkdir -p /app/dashboard /app/assets /app/config /app/utils
 
 # ── Copiar código de demostración ──────────────────────────────────────────────
 # En el proyecto real, aquí va toda la lógica del dashboard
