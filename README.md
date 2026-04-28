@@ -60,10 +60,10 @@ graph TB
 
 | Servicio | URL en Producción | Descripción |
 |----------|-------------------|-------------|
+| **Dashboard** | [desirable-luck-production.up.railway.app](https://desirable-luck-production.up.railway.app) | Panel visual completo |
 | **API Docs** | [proyecto-midas-demo-production.up.railway.app/docs](https://proyecto-midas-demo-production.up.railway.app/docs) | Swagger UI interactivo |
-| **Health** | [proyecto-midas-demo-production.up.railway.app/health](https://proyecto-midas-demo-production.up.railway.app/health) | Estado del sistema |
 | **Predicción completa** | [proyecto-midas-demo-production.up.railway.app/predict/full](https://proyecto-midas-demo-production.up.railway.app/predict/full) | Las 3 predicciones en JSON |
-| **Modelos** | [proyecto-midas-demo-production.up.railway.app/models](https://proyecto-midas-demo-production.up.railway.app/models) | Info de modelos ML |
+| **Health** | [proyecto-midas-demo-production.up.railway.app/health](https://proyecto-midas-demo-production.up.railway.app/health) | Estado del sistema |
 
 ---
 
