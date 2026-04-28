@@ -1,59 +1,16 @@
-# ══════════════════════════════════════════════════════════════════════════════
-# Dockerfile.dashboard — Dashboard de Demostración para Proyecto MIDAS  
-#
-# PROPÓSITO:
-#   Dockerfile que muestra la estructura del dashboard Streamlit de producción
-#   con visualizaciones simplificadas para demostración.
-#
-# NOTA DE PRESENTACIÓN:
-#   El dashboard real incluye visualizaciones avanzadas, análisis de ROI,
-#   y métricas de negocio detalladas no expuestas en esta demo.
-# ══════════════════════════════════════════════════════════════════════════════
+FROM python:3.11-slim
 
-FROM python:3.11-slim AS base
-
-# Metadatos de la imagen
-LABEL maintainer="Proyecto MIDAS" \
-      description="Dashboard de Demostración - Sistema de Predicción para Restaurante" \
-      version="demo-1.0.0" \
-      demo="true"
-
-# Variables de entorno optimizadas para Streamlit en contenedor
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    STREAMLIT_SERVER_HEADLESS=true \
-    STREAMLIT_SERVER_ENABLE_CORS=false \
-    STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION=false \
-    STREAMLIT_BROWSER_GATHER_USAGE_STATS=false \
     DEMO_MODE=true
 
-# ── Dependencias del sistema ───────────────────────────────────────────────────
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        curl \
-        ca-certificates \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# ── Configurar directorio de trabajo ───────────────────────────────────────────
 WORKDIR /app
 
-# ── Instalar dependencias Python ───────────────────────────────────────────────
 COPY requirements/dashboard.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# ── Copiar código de demostración ──────────────────────────────────────────────
 COPY dashboard/ ./dashboard/
 
-# ── Seguridad: Usuario no privilegiado ────────────────────────────────────────
-RUN useradd --create-home --shell /bin/bash appuser \
-    && chown -R appuser:appuser /app
-USER appuser
-
-# ── Puerto y arranque ─────────────────────────────────────────────────────────
-EXPOSE 8080
-
 WORKDIR /app/dashboard
-CMD ["sh", "-c", "streamlit run app.py --server.port ${PORT:-8501} --server.address 0.0.0.0 --server.headless true --server.enableCORS false --server.enableXsrfProtection false"]
+CMD ["sh", "-c", "streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true --server.enableCORS false --server.enableXsrfProtection false --server.fileWatcherType none"]
