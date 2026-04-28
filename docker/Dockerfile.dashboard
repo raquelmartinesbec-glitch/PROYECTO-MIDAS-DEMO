@@ -41,12 +41,12 @@ RUN apt-get update \
 WORKDIR /app
 
 # ── Instalar dependencias Python ───────────────────────────────────────────────
-COPY requirements-dashboard-demo.txt ./requirements.txt
+COPY requirements/dashboard.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # ── Configuración de Streamlit ─────────────────────────────────────────────────
 # Copia configuración básica de Streamlit
-COPY docker/streamlit_config_demo.toml /app/.streamlit/config.toml
+COPY docker/streamlit.toml /app/.streamlit/config.toml
 
 # ── Estructura de directorios ──────────────────────────────────────────────────
 # Recreamos la estructura del dashboard real
@@ -55,7 +55,7 @@ RUN mkdir -p /app/{dashboard,assets,config,utils} \
 
 # ── Copiar código de demostración ──────────────────────────────────────────────
 # En el proyecto real, aquí va toda la lógica del dashboard
-COPY demo_dashboard/ ./dashboard/
+COPY dashboard/ ./dashboard/
 
 # ── Seguridad: Usuario no privilegiado ────────────────────────────────────────
 RUN useradd --create-home --shell /bin/bash appuser \
@@ -69,7 +69,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
     CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8501/_stcore/health')" || exit 1
 
 WORKDIR /app/dashboard
-CMD ["streamlit", "run", "demo_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
 
 # ── Información de la imagen ───────────────────────────────────────────────────
 # Esta imagen de demostración muestra:

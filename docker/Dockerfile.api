@@ -38,7 +38,7 @@ RUN apt-get update \
 WORKDIR /app
 
 # Copia solo las dependencias necesarias para la demostración
-COPY requirements-demo.txt ./requirements.txt
+COPY requirements/api.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # ── Estructura de directorios básica ───────────────────────────────────────────
@@ -48,7 +48,7 @@ RUN mkdir -p /app/{api,models,config} \
 
 # ── Copiar código de demostración ──────────────────────────────────────────────
 # En el proyecto real, aquí iría todo el código de la API
-COPY demo_api/ ./api/
+COPY api/ ./api/
 
 # NOTA: El directorio /app/models/ en producción contiene modelos entrenados
 # que se montan como volumen. En esta demo, usamos simulaciones.
@@ -65,7 +65,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
 
 WORKDIR /app/api
-CMD ["uvicorn", "demo_main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
 
 # ── Información de la imagen ───────────────────────────────────────────────────
 # Esta imagen de demostración muestra:

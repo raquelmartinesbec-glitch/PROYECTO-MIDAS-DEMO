@@ -12,10 +12,10 @@
 
 [build]
 builder = "nixpacks"
-buildCommand = "pip install -r requirements-dashboard-demo.txt"
+buildCommand = "pip install -r requirements/dashboard.txt"
 
 [deploy]
-startCommand = "streamlit run demo_dashboard/demo_app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true"
+startCommand = "streamlit run dashboard/app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true"
 healthcheckPath = "/_stcore/health"
 healthcheckTimeout = 300
 restartPolicyType = "on_failure"

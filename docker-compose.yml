@@ -84,7 +84,7 @@ services:
       POSTGRES_DB: midas_demo_db
     volumes:
       # Script básico de inicialización para demostración
-      - ./db/demo_init.sql:/docker-entrypoint-initdb.d/01_demo_init.sql:ro
+      - ./db/init.sql:/docker-entrypoint-initdb.d/01_init.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U demo_user -d midas_demo_db"]
       interval: 10s
