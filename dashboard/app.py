@@ -114,8 +114,8 @@ with col1:
     if sales_prediction:
         st.metric(
             "Ventas estimadas",
-            f"€{sales_prediction['predicted_value']:.0f}",
-            f"Confianza: {sales_prediction['confidence_score']:.0%}"
+            f"€{sales_prediction['value']:.0f}",
+            f"Confianza: {sales_prediction['confidence']:.0%}"
         )
     else:
         st.metric("Ventas estimadas", "€2,450", "Confianza: 85%")
@@ -126,8 +126,8 @@ with col2:
     if staff_prediction:
         st.metric(
             "Personal necesario", 
-            f"{staff_prediction['predicted_value']:.0f} personas",
-            f"Confianza: {staff_prediction['confidence_score']:.0%}"
+            f"{staff_prediction['value']:.0f} personas",
+            f"Confianza: {staff_prediction['confidence']:.0%}"
         )
     else:
         st.metric("Personal necesario", "8 personas", "Confianza: 78%")
@@ -138,8 +138,8 @@ with col3:
     if perishables_prediction:
         st.metric(
             "Compra perecederos",
-            f"€{perishables_prediction['predicted_value']:.0f}",
-            f"Confianza: {perishables_prediction['confidence_score']:.0%}"
+            f"€{perishables_prediction['value']:.0f}",
+            f"Confianza: {perishables_prediction['confidence']:.0%}"
         )
     else:
         st.metric("Compra perecederos", "€420", "Confianza: 82%")
