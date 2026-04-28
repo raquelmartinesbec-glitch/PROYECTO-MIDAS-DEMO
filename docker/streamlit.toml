@@ -16,11 +16,8 @@ headless = true
 [browser]
 gatherUsageStats = false
 
-[global]
-developmentMode = false
-
-# Configuración de logging básica
-logLevel = "info"
+[logger]
+level = "info"
 
 [theme]
 # Tema básico para la demostración (personalizable en producción)
