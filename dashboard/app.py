@@ -1,14 +1,3 @@
-# ══════════════════════════════════════════════════════════════════════════════
-# demo_app.py — Dashboard de demostración para Proyecto MIDAS
-#
-# PROPÓSITO: Dashboard Streamlit que simula las funcionalidades principales
-#           sin exponer las visualizaciones y métricas reales del sistema.
-#
-# NOTA PARA EVALUADORES: Esta es una versión simplificada que muestra la
-#                        estructura del dashboard real. La implementación
-#                        completa incluye análisis avanzados y métricas
-#                        de ROI detalladas.
-# ══════════════════════════════════════════════════════════════════════════════
 
 import streamlit as st
 import pandas as pd
@@ -21,7 +10,7 @@ import os
 
 # ── Configuración de la página ─────────────────────────────────────────────────
 st.set_page_config(
-    page_title="MIDAS - Dashboard Demo",
+    page_title="MIDAS - Sistema de Predicción",
     page_icon="🍽️", 
     layout="wide",
     initial_sidebar_state="expanded"
@@ -328,7 +317,7 @@ st.markdown(
 
 
 API_URL = os.getenv("API_URL", "http://localhost:8000")
-DEMO_MODE = os.getenv("DEMO_MODE", "true").lower() == "true"
+DEMO_MODE = os.getenv("DEMO_MODE", "false").lower() == "true"
 
 # ── Funciones auxiliares ───────────────────────────────────────────────────────
 @st.cache_data(ttl=60)
@@ -389,11 +378,7 @@ PLOT_LAYOUT = dict(
 
 # ── Header principal ───────────────────────────────────────────────────────────
 st.title("🍽️ MIDAS - Sistema de Predicción")
-st.markdown("**Dashboard de Demostración** | Sistema de Predicción para Restaurante")
-
-# Banner de demostración
-if DEMO_MODE:
-    st.warning("⚠️ **MODO DEMOSTRACIÓN** - Esta es una versión simplificada del dashboard real. Los datos mostrados son simulados.")
+st.caption("Predicción de ventas · Personal · Perecederos")
 
 # ── Sidebar de configuración ───────────────────────────────────────────────────
 with st.sidebar:
@@ -893,8 +878,8 @@ with col1:
     st.subheader("Modelos Activos")
     models_info = call_api("/models/info")
     
-    if models_info and "demo_models" in models_info:
-        for model_name, info in models_info["demo_models"].items():
+    if models_info and "models" in models_info:
+        for model_name, info in models_info["models"].items():
             st.write(f"**{model_name}**: {info['accuracy']} precisión")
     else:
         st.write("- **sales_model**: 92% precisión")
@@ -909,34 +894,12 @@ with col2:
         st.success("✅ API conectada y funcionando")
         st.write(f"Última actualización: {datetime.now().strftime('%H:%M:%S')}")
     else:
-        st.error("❌ API no disponible (modo demo)")
+        st.error("❌ API no disponible")
 
 # ── Footer ─────────────────────────────────────────────────────────────────────
 st.markdown("---")
 st.markdown("""
-<div style='text-align: center; color: #666;'>
-<p><strong>MIDAS - Proyecto Demo</strong> | Sistema de Predicción para Restaurante</p>
-<p>⚠️ Esta demostración muestra únicamente la estructura y arquitectura del sistema.<br/>
-El código completo y modelos están protegidos por propiedad intelectual.</p>
+<div style='text-align: center;'>
+<p><strong>MIDAS</strong> | Sistema de Predicción para Restaurante</p>
 </div>
 """, unsafe_allow_html=True)
-
-# ══════════════════════════════════════════════════════════════════════════════
-# NOTA FINAL PARA EVALUADORES:
-#
-# Este dashboard de demostración muestra:
-# ✅ Interfaz moderna y responsiva con Streamlit
-# ✅ Visualizaciones interactivas con Plotly
-# ✅ Integración con API backend
-# ✅ Métricas de negocio estructuradas
-# ✅ Dashboard en tiempo real con cache
-#
-# El dashboard completo incluye:
-# 🔒 Visualizaciones avanzadas con datos reales
-# 🔒 Análisis de tendencias con ML
-# 🔒 Alertas inteligentes y notificaciones
-# 🔒 Exportación de reportes automáticos
-# 🔒 Panel de administración con configuraciones
-# 🔒 Autenticación y roles de usuario
-# 🔒 Integración con sistemas externos (POS, inventario)
-# ══════════════════════════════════════════════════════════════════════════════

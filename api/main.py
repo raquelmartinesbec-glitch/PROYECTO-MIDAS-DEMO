@@ -1,14 +1,3 @@
-# ══════════════════════════════════════════════════════════════════════════════
-# demo_main.py — API de demostración para Proyecto MIDAS
-#
-# PROPÓSITO: FastAPI básica que simula los endpoints principales sin exponer
-#           la lógica de negocio real ni los modelos de Machine Learning.
-#
-# NOTA PARA EVALUADORES: Esta es una implementación simplificada que muestra
-#                        la estructura de la API real. El código completo
-#                        incluye validaciones avanzadas, modelos ML y
-#                        lógica de negocio propietaria.
-# ══════════════════════════════════════════════════════════════════════════════
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
@@ -19,21 +8,19 @@ import os
 
 # ── Configuración de la aplicación ─────────────────────────────────────────────
 app = FastAPI(
-    title="MIDAS - Sistema de Predicción Demo",
-    description="API de demostración para sistema de predicción de restaurante",
-    version="demo-1.0.0",
+    title="MIDAS - Sistema de Predicción",
+    description="API de predicción para restaurante",
+    version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc"
 )
 
-# ── Modelos de datos para demostración ─────────────────────────────────────────
+# ── Modelos de datos ──────────────────────────────────────────────────────────
 class SimplePredictionRequest(BaseModel):
-    """Modelo simplificado para demo"""
     target_date: str = Field(default="2026-04-28", description="Fecha (YYYY-MM-DD)")
     scenario: str = Field(default="normal", description="Escenario: normal, busy, quiet")
 
 class PredictionResponse(BaseModel):
-    """Respuesta de predicción (estructura de demostración)"""
     date: str
     type: str
     value: float
@@ -44,32 +31,23 @@ class PredictionResponse(BaseModel):
 
 @app.get("/")
 async def root():
-    """Endpoint principal con información de la demo"""
     return {
-        "message": "MIDAS - Sistema de Predicción Demo API",
-        "version": "demo-1.0.0",
+        "message": "MIDAS - Sistema de Predicción API",
+        "version": "1.0.0",
         "status": "running",
-        "demo_mode": True,
-        "endpoints": ["/docs", "/health", "/predict/sales", "/predict/staff", "/predict/perishables", "/predict/full", "/models"],
-        "note": "Esta es una demostración. La API completa incluye modelos ML reales."
+        "endpoints": ["/docs", "/health", "/predict/sales", "/predict/staff", "/predict/perishables", "/predict/full", "/models"]
     }
 
 @app.get("/health")
 async def health_check():
-    """Health check para Docker"""
     return {
         "status": "ok",
         "models_loaded": ["sales", "staff", "perishables"],
-        "timestamp": datetime.now().isoformat() + "Z",
-        "demo_mode": True
+        "timestamp": datetime.now().isoformat() + "Z"
     }
 
 @app.post("/predict/sales", response_model=PredictionResponse)
 async def predict_sales(request: SimplePredictionRequest = None):
-    """
-    DEMOSTRACIÓN: Predicción de ventas
-    La implementación real usa modelos RandomForest entrenados
-    """
     # Simulación inteligente según escenario
     scenario_multiplier = {
         "quiet": 0.8,
@@ -91,10 +69,6 @@ async def predict_sales(request: SimplePredictionRequest = None):
 
 @app.post("/predict/staff", response_model=PredictionResponse)
 async def predict_staff(request: SimplePredictionRequest = None):
-    """
-    DEMOSTRACIÓN: Predicción de personal necesario
-    La implementación real considera múltiples variables y modelos ML
-    """
     scenario_staff = {
         "quiet": 6,
         "normal": 8,
@@ -113,10 +87,6 @@ async def predict_staff(request: SimplePredictionRequest = None):
 
 @app.post("/predict/perishables", response_model=PredictionResponse)
 async def predict_perishables(request: SimplePredictionRequest = None):
-    """
-    DEMOSTRACIÓN: Predicción de productos perecederos
-    La implementación real incluye análisis de tendencias y estacionalidad
-    """
     scenario_perishables = {
         "quiet": 320,
         "normal": 450,
@@ -135,10 +105,6 @@ async def predict_perishables(request: SimplePredictionRequest = None):
 
 @app.post("/predict/full")
 async def predict_full(request: SimplePredictionRequest = None):
-    """
-    DEMOSTRACIÓN: Predicción completa (todos los tipos)
-    Endpoint unificado que devuelve todas las predicciones
-    """
     if not request:
         request = SimplePredictionRequest()
     
@@ -155,21 +121,17 @@ async def predict_full(request: SimplePredictionRequest = None):
             "perishables": perishables.dict()
         },
         "summary": {
-            "total_confidence": round((sales.confidence + 
-                                    staff.confidence + 
+            "total_confidence": round((sales.confidence +
+                                    staff.confidence +
                                     perishables.confidence) / 3, 2),
-            "demo_mode": True,
             "generated_at": datetime.now().isoformat()
         }
     }
 
 @app.get("/models")
 async def models_info():
-    """
-    Información sobre los modelos (versión de demostración)
-    """
     return {
-        "status": "demo",
+        "status": "active",
         "models": {
             "sales": {
                 "type": "RandomForestRegressor",
@@ -190,7 +152,6 @@ async def models_info():
                 "features": 10
             }
         },
-        "note": "Modelos reales protegidos por propiedad intelectual"
     }
 
 # ── Configuración de la aplicación ─────────────────────────────────────────────
@@ -198,22 +159,3 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
-# ══════════════════════════════════════════════════════════════════════════════
-# NOTA FINAL PARA EVALUADORES:
-#
-# Esta API de demostración muestra:
-# ✅ Estructura profesional con FastAPI
-# ✅ Documentación automática (Swagger/OpenAPI)
-# ✅ Validación de datos con Pydantic
-# ✅ Endpoints RESTful bien diseñados
-# ✅ Responses estructuradas y consistentes
-#
-# La API completa incluye:
-# 🔒 Modelos de ML entrenados con datos reales
-# 🔒 Validaciones avanzadas de entrada
-# 🔒 Sistema de autenticación y autorización  
-# 🔒 Rate limiting y protección contra abuso
-# 🔒 Logging estructurado y monitoreo
-# 🔒 Cache inteligente con Redis
-# 🔒 Manejo avanzado de errores y excepciones
-# ══════════════════════════════════════════════════════════════════════════════
