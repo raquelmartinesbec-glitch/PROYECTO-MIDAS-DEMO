@@ -14,7 +14,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 import requests
 import json
 import os
@@ -75,42 +75,42 @@ if DEMO_MODE:
     st.warning("⚠️ **MODO DEMOSTRACIÓN** - Esta es una versión simplificada del dashboard real. Los datos mostrados son simulados.")
 
 # ── Sidebar de configuración ───────────────────────────────────────────────────
-st.sidebar.header("⚙️ Configuración")
+with st.sidebar:
+    st.header("⚙️ Parámetros del día")
 
-# Control de fecha
-prediction_date = st.sidebar.date_input(
-    "Fecha de predicción",
-    value=date.today(),
-    min_value=date.today(),
-    max_value=date.today() + timedelta(days=30)
-)
+    prediction_date = st.date_input("📅 Fecha", value=date.today())
 
-# Configuraciones adicionales
-weather = st.sidebar.selectbox(
-    "Condición climática",
-    ["sunny", "cloudy", "rainy", "stormy"]
-)
-
-is_holiday = st.sidebar.checkbox("¿Es día festivo?")
-
-st.sidebar.markdown("---")
-st.sidebar.subheader("📅 Eventos y Reservas")
-
-has_event = st.sidebar.checkbox("¿Hay evento especial?")
-event_type = None
-if has_event:
-    event_type = st.sidebar.selectbox(
-        "Tipo de evento",
-        ["cumpleaños", "boda", "corporativo", "reunion", "otro"]
+    weather = st.selectbox(
+        "🌤️ Clima",
+        options=["sol", "nublado", "lluvia", "nieve"],
+        index=0,
+        format_func=lambda x: {"sol": "☀️ Sol", "nublado": "🌥 Nublado",
+                                "lluvia": "🌧️ Lluvia", "nieve": "❄️ Nieve"}[x],
     )
+    is_holiday = st.checkbox("📅 ¿Día festivo?", value=False)
+    reservations = st.slider("📋 Reservas confirmadas", min_value=0, max_value=100, value=15)
 
-reservations = st.sidebar.number_input(
-    "Nº de reservas",
-    min_value=0,
-    max_value=300,
-    value=0,
-    step=5
-)
+    st.divider()
+    has_event = st.checkbox("🎉 ¿Hay evento especial?", value=False)
+
+    if has_event:
+        event_intensity = st.slider("🔥 Intensidad del evento", min_value=1, max_value=3, value=2)
+        event_people    = st.slider("👥 Asistentes al evento", min_value=15, max_value=220, value=70,
+                                   help="Mínimo 15 personas para considerar evento especial")
+        event_price = st.number_input(
+            "💶 Precio por persona del evento (€)",
+            min_value=0.0,
+            max_value=500.0,
+            value=30.0,
+            step=1.0,
+            help="Precio que cobra el restaurante por persona en el evento especial"
+        )
+    else:
+        event_intensity = 0
+        event_people    = 0
+        event_price = 0.0
+
+    st.divider()
 
 # ── Sección de predicciones en tiempo real ─────────────────────────────────────
 st.header("📊 Predicciones del Día")
@@ -123,7 +123,9 @@ prediction_data = {
     "is_holiday": is_holiday,
     "weather": weather,
     "has_event": has_event,
-    "event_type": event_type,
+    "event_intensity": event_intensity,
+    "event_people": event_people,
+    "event_price": event_price,
     "reservations": reservations
 }
 
