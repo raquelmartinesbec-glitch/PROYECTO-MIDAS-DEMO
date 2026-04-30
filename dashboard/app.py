@@ -1,8 +1,9 @@
 
 # ══════════════════════════════════════════════════════════════════════════════
 # MIDAS Dashboard - Sistema de Predicción de Restaurante
-# Versión: 2.0.1 - Fixed Railway deployment issues 
-# Última actualización: 2026-04-30 13:50 - Cache busting fix
+# Versión: 2.1.0-FINAL - Railway cache bypass 
+# Deploy timestamp: 2026-04-30 14:00 UTC
+# COMMIT HASH: ef8bb79 - FORCE RAILWAY REBUILD
 # ══════════════════════════════════════════════════════════════════════════════
 
 import streamlit as st
@@ -568,6 +569,7 @@ if not sample_data.empty:
             text=sample_data['staff'].round(0),
             textposition='outside'
         ))
+        # ✅ FIXED: No height=300 duplicate argument (Railway cache bypass 2026-04-30)
         fig_staff.update_layout(**PLOT_LAYOUT, title='Personal por escenario', yaxis_title='Personas')
         st.plotly_chart(fig_staff, use_container_width=True)
 else:
