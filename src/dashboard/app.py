@@ -551,7 +551,7 @@ if not sample_data.empty:
             text=sample_data['sales'].round(0),
             textposition='outside'
         ))
-        fig_sales.update_layout(**PLOT_LAYOUT, title='Ventas por escenario', yaxis_title='Ventas (€)', height=300)
+        fig_sales.update_layout(title='Ventas por escenario', yaxis_title='Ventas (€)')
         st.plotly_chart(fig_sales, use_container_width=True)
     
     with col_b:
