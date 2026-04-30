@@ -40,9 +40,10 @@ class PredictionResponse(BaseModel):
 @app.get("/")
 async def root():
     return {
-        "message": "MIDAS - Sistema de Predicción API",
-        "version": "1.0.1-sync",
-        "release": "sync-2026-04-30-01",
+        "message": "MIDAS - Sistema de Predicción API", 
+        "version": "1.0.2-force",
+        "release": "force-deploy-2026-04-30",
+        "build_time": datetime.now().isoformat(),
         "status": "running",
         "endpoints": ["/docs", "/health", "/predict/sales", "/predict/staff", "/predict/perishables", "/predict/full", "/models"]
     }
