@@ -6,9 +6,10 @@ buildCommand = "echo 'Building MIDAS Dashboard...'"
 [deploy]
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
-startCommand = "streamlit run dashboard/app.py --server.port $PORT --server.address 0.0.0.0"
+startCommand = "streamlit run dashboard/app.py --server.address 0.0.0.0"
 
 [env]
 # Variables de entorno por defecto
 STREAMLIT_SERVER_HEADLESS = "true"
 STREAMLIT_SERVER_ENABLE_STATIC_SERVING = "true"
+STREAMLIT_SERVER_PORT = "$PORT"

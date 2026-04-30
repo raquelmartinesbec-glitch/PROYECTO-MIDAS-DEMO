@@ -37,12 +37,8 @@ RUN groupadd -r midas && useradd -r -g midas midas
 RUN chown -R midas:midas /app
 USER midas
 
-# Exponer puerto
-EXPOSE 8501
+# Exponer puerto dinámico
+EXPOSE $PORT
 
-# Healthcheck integrado
-HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
-    CMD curl -f http://localhost:8501/_stcore/health || exit 1
-
-# Comando por defecto (Railway puede sobreescribirlo)
-CMD ["streamlit", "run", "src/dashboard/app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
+# Comando por defecto (Railway sobreescribirá con startCommand)
+CMD ["streamlit", "run", "dashboard/app.py", "--server.address", "0.0.0.0"]

@@ -18,4 +18,4 @@ startCommand = "streamlit run dashboard/app.py --server.port $PORT --server.addr
 [env]
 # Variables de entorno por defecto (pueden sobreescribirse en Railway UI)
 STREAMLIT_SERVER_HEADLESS = "true"
-STREAMLIT_SERVER_ENABLE_STATIC_SERVING = "true"
+STREAMLIT_SERVER_ENABLE_STATIC_SERVING = "true"STREAMLIT_SERVER_PORT = "$PORT"
