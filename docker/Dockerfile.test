@@ -1,0 +1,33 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# Dockerfile.test — Imagen Docker para la suite de tests de integración
+#
+# Uso:
+#   docker compose --profile test run --rm midas-test
+#
+# El servicio espera activamente a que la API esté lista (healthcheck),
+# ejecuta todos los test cases y devuelve exit code 0 si pasan, 1 si fallan.
+# ══════════════════════════════════════════════════════════════════════════════
+
+FROM python:3.11-slim
+
+LABEL maintainer="Proyecto Midas" \
+      description="Suite de tests de integración" \
+      version="1.1.0"
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+WORKDIR /app
+
+# Solo necesita requests
+RUN pip install --no-cache-dir "requests>=2.31.0,<3.0.0"
+
+COPY tests/test_predictions.py .
+
+# SEGURIDAD: usuario no privilegiado
+RUN useradd --create-home --shell /bin/bash testuser \
+    && chown -R testuser:testuser /app
+USER testuser
+
+CMD ["python", "test_predictions.py"]

@@ -1,16 +1,45 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# Dockerfile.dashboard — Imagen Docker para el dashboard Streamlit de Midas
+#
+# SEGURIDAD:
+#   · Usuario no root.
+#   · API_URL se pasa como variable de entorno en runtime (no hardcodeada).
+#   · El dashboard solo realiza llamadas HTTP a la API interna.
+#   · TODO producción: añadir autenticación al dashboard (OAuth2/LDAP).
+# ══════════════════════════════════════════════════════════════════════════════
+
 FROM python:3.11-slim
+
+LABEL maintainer="Proyecto Midas" \
+      description="Dashboard Streamlit para predicción de restaurante" \
+      version="1.0.0"
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1 \
-    DEMO_MODE=true
+    PIP_NO_CACHE_DIR=1
 
+# ── Instalar dependencias Python ───────────────────────────────────────────────
 WORKDIR /app
+COPY requirements/requirements-dashboard.txt .
+RUN pip install --no-cache-dir -r requirements-dashboard.txt
 
-COPY requirements/dashboard.txt ./requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# ── Copiar código del dashboard ────────────────────────────────────────────────
+COPY dashboard/ dashboard/
 
-COPY dashboard/ ./dashboard/
+# Configuración de Streamlit (sin telemetría, sin browser auto-open)
+RUN mkdir -p /app/.streamlit
+COPY docker/streamlit_config.toml /app/.streamlit/config.toml
+
+# SEGURIDAD: Usuario no privilegiado
+RUN useradd --create-home --shell /bin/bash appuser \
+    && chown -R appuser:appuser /app
+USER appuser
+
+# ── Puerto y arranque ─────────────────────────────────────────────────────────
+EXPOSE 8501
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8501/_stcore/health')" || exit 1
 
 WORKDIR /app/dashboard
-CMD ["sh", "-c", "streamlit run app.py --server.port ${PORT:-8501} --server.address 0.0.0.0 --server.headless true --server.enableCORS false --server.enableXsrfProtection false --server.fileWatcherType none"]
+CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]

@@ -1,0 +1,50 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# Dockerfile.training — Imagen Docker para generar datos y entrenar modelos
+#
+# Uso:
+#   docker compose --profile training run --rm training
+#
+# Flujo:
+#   1. python generate_data.py        → data/year_1.csv, data/year_2.csv
+#   2. python training/train_sales_model.py
+#   3. python training/train_staff_model.py
+#   4. python training/train_perishables_model.py
+#
+# Los modelos se guardan en /app/models/ (volumen compartido con la API).
+# ══════════════════════════════════════════════════════════════════════════════
+
+FROM python:3.11-slim
+
+LABEL maintainer="Proyecto Midas" \
+      description="Servicio de entrenamiento de modelos" \
+      version="1.0.0"
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+WORKDIR /app
+
+# ── Dependencias de entrenamiento ─────────────────────────────────────────────
+COPY requirements/requirements-training.txt .
+RUN pip install --no-cache-dir -r requirements-training.txt
+
+# ── Código fuente ─────────────────────────────────────────────────────────────
+COPY scripts/generate_data.py .
+COPY training/ training/
+
+# Los volúmenes data/ y models/ se montan desde docker-compose
+RUN mkdir -p data models
+
+# SEGURIDAD: Usuario no privilegiado
+RUN useradd --create-home --shell /bin/bash appuser \
+    && chown -R appuser:appuser /app
+USER appuser
+
+# Ejecutar pipeline completo de datos + entrenamiento
+CMD ["sh", "-c", \
+     "python generate_data.py && \
+      python training/train_sales_model.py && \
+      python training/train_staff_model.py && \
+      python training/train_perishables_model.py && \
+      echo '=== Entrenamiento completado. Modelos disponibles en /app/models/ ==='"]

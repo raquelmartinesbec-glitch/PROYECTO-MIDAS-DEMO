@@ -1,59 +1,47 @@
 # ══════════════════════════════════════════════════════════════════════════════
-# Dockerfile.api — API de Demostración para Proyecto MIDAS
+# Dockerfile.api — Imagen Docker para la API FastAPI de Midas
 #
-# PROPÓSITO: 
-#   Dockerfile básico que muestra la estructura de la API de producción
-#   sin exponer el código fuente completo.
-#
-# NOTA DE PRESENTACIÓN:
-#   La API real incluye modelos de Machine Learning, validaciones avanzadas,
-#   y lógica de negocio propietaria no mostrada en esta demostración.
+# SEGURIDAD:
+#   · Imagen slim (superficie de ataque mínima).
+#   · Usuario no root (appuser) para ejecutar el proceso.
+#   · Sin secretos en la imagen — usar variables de entorno en runtime.
+#   · TODO producción: escanear imagen con trivy/snyk antes de desplegar.
+#   · TODO producción: añadir .dockerignore para excluir archivos innecesarios.
 # ══════════════════════════════════════════════════════════════════════════════
 
 FROM python:3.11-slim AS base
 
-# Metadatos de la imagen
-LABEL maintainer="Proyecto MIDAS" \
-      description="API de Demostración - Sistema de Predicción para Restaurante" \
-      version="demo-1.0.0" \
-      demo="true"
+# Metadatos
+LABEL maintainer="Proyecto Midas" \
+      description="API de predicción para restaurante" \
+      version="1.0.0"
 
-# Variables de entorno: configuración optimizada para contenedores
+# Variables de entorno: evita archivos .pyc y buffering en logs
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    DEMO_MODE=true
+    PIP_DISABLE_PIP_VERSION_CHECK=1
 
 # ── Dependencias del sistema ───────────────────────────────────────────────────
-# Incluye curl para health checks y herramientas básicas
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         curl \
-        ca-certificates \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # ── Instalar dependencias Python ───────────────────────────────────────────────
 WORKDIR /app
-
-# Copia solo las dependencias necesarias para la demostración
-COPY requirements/api.txt ./requirements.txt
+COPY requirements/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# ── Estructura de directorios básica ───────────────────────────────────────────
-# Recreamos la estructura del proyecto real sin el contenido sensible
-RUN mkdir -p /app/api /app/models /app/config \
-    && echo "# Demo structure" > /app/models/README.md
+# ── Copiar código fuente ───────────────────────────────────────────────────────
+COPY api/ api/
 
-# ── Copiar código de demostración ──────────────────────────────────────────────
-# En el proyecto real, aquí iría todo el código de la API
-COPY api/ ./api/
+# El directorio /app/models/ se monta como volumen desde docker-compose.
+# Los modelos se generan ejecutando el servicio 'training' primero.
+RUN mkdir -p models
 
-# NOTA: El directorio /app/models/ en producción contiene modelos entrenados
-# que se montan como volumen. En esta demo, usamos simulaciones.
-
-# ── Seguridad: Usuario no privilegiado ────────────────────────────────────────
+# SEGURIDAD: Crear y usar usuario no privilegiado
 RUN useradd --create-home --shell /bin/bash appuser \
     && chown -R appuser:appuser /app
 USER appuser
@@ -61,22 +49,10 @@ USER appuser
 # ── Puerto y arranque ─────────────────────────────────────────────────────────
 EXPOSE 8000
 
+# Healthcheck interno para Docker
 HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
-    CMD curl -f http://localhost:${PORT:-8000}/health || exit 1
+    CMD curl -f http://localhost:8000/health || exit 1
 
-WORKDIR /app/api
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1"]
-
-# ── Información de la imagen ───────────────────────────────────────────────────
-# Esta imagen de demostración muestra:
-# • Estructura containerizada profesional
-# • Configuración de seguridad (usuario no root)  
-# • Health checks y logging optimizado
-# • Arquitectura escalable para producción
-#
-# La implementación completa incluye:
-# • Modelos de ML entrenados (RandomForest)
-# • Validación de datos avanzada con Pydantic
-# • Manejo de errores y logging estructurado
-# • Autenticación y autorización
-# • Rate limiting y cache
+# Arrancar uvicorn desde /app para que los imports "from api.xxx" funcionen
+WORKDIR /app
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]

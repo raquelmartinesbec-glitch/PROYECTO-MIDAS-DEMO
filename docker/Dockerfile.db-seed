@@ -1,0 +1,30 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# Dockerfile.db-seed — Imagen para la carga inicial de bases de datos Midas
+#
+# Carga year_1.csv + year_2.csv en midas_db.synthetic_data
+# y registra metadatos de los modelos en midas_db.model_versions.
+#
+# USO (via docker compose):
+#   docker compose --profile data up postgres -d
+#   docker compose --profile data run --rm midas-db-seed
+# ══════════════════════════════════════════════════════════════════════════════
+
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Dependencias mínimas: psycopg2 (cliente PostgreSQL), pandas, joblib
+RUN pip install --no-cache-dir psycopg2-binary==2.9.9 pandas==2.2.0 joblib==1.3.2
+
+# Copiar solo lo necesario para el seed
+COPY db/seed_synthetic_data.py ./db/seed_synthetic_data.py
+
+# Los volúmenes de datos y modelos se montan en runtime:
+#   - ./data    → /app/data    (CSVs)
+#   - ./models  → /app/models  (artefactos .pkl)
+
+# Usuario no-root por seguridad
+RUN useradd -m -u 1001 seeduser
+USER seeduser
+
+CMD ["python", "db/seed_synthetic_data.py"]
