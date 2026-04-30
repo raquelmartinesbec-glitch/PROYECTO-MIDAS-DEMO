@@ -347,23 +347,45 @@ def call_api(endpoint, data=None):
         return None
 
 def generate_demo_data():
-    """Genera datos demo para visualizaciones"""
-    dates = pd.date_range(start='2024-01-01', end='2024-04-30', freq='D')
-    
+    """Genera 2 años de datos demo sintéticos para visualizaciones"""
+    import numpy as np
+    dates = pd.date_range(start='2023-01-01', end='2024-12-31', freq='D')
+    seasonal_boost = [0, -200, -100, 150, 200, 300, 350, 320, 200, 100, -50, 400]
+    rng = np.random.default_rng(42)
     data = []
     for d in dates:
-        sales = 2000 + (d.weekday() >= 5) * 600 + (d.month in [3, 4]) * 300
-        staff = 6 + (d.weekday() >= 5) * 2
-        perishables = 400 + (d.month in [3, 4]) * 50
-        
+        weekday = d.weekday()
+        month = d.month
+        base = 1800 + weekday * 100 if weekday < 5 else 2700 + (weekday - 5) * 180
+        seasonal = seasonal_boost[month - 1]
+        has_event = rng.random() < 0.15
+        event_boost = int(rng.integers(400, 900)) if has_event else 0
+        sales = max(800, base + seasonal + event_boost + int(rng.integers(-200, 200)))
         data.append({
             'date': d,
-            'sales': sales + (hash(str(d)) % 400 - 200),  # Variación aleatoria
-            'staff': max(4, staff + (hash(str(d)) % 3 - 1)),
-            'perishables': perishables + (hash(str(d)) % 100 - 50)
+            'weekday': weekday,
+            'month': month,
+            'year': d.year,
+            'sales': float(sales),
+            'staff': max(4, 6 + int(weekday >= 5) * 2 + int(has_event)),
+            'perishables': float(max(150, 350 + seasonal * 0.1 + int(rng.integers(-50, 80)))),
+            'reservations': max(0, 15 + int(weekday >= 5) * 10 + int(has_event) * 20 + int(rng.integers(-5, 15))),
+            'has_event': int(has_event),
         })
-    
     return pd.DataFrame(data)
+
+
+PLOT_LAYOUT = dict(
+    paper_bgcolor='rgba(0,10,26,0)',
+    plot_bgcolor='rgba(0,10,26,0.6)',
+    font=dict(color='#00d4ff', family='Exo 2, sans-serif'),
+    title_font=dict(color='#66ccff', size=16),
+    xaxis=dict(gridcolor='rgba(0,212,255,0.1)', linecolor='rgba(0,212,255,0.3)', tickfont=dict(color='#00d4ff')),
+    yaxis=dict(gridcolor='rgba(0,212,255,0.1)', linecolor='rgba(0,212,255,0.3)', tickfont=dict(color='#00d4ff')),
+    legend=dict(bgcolor='rgba(0,10,26,0.7)', bordercolor='rgba(0,212,255,0.3)', borderwidth=1),
+    margin=dict(l=40, r=20, t=50, b=40),
+    height=420,
+)
 
 # ── Header principal ───────────────────────────────────────────────────────────
 st.title("🍽️ MIDAS - Sistema de Predicción")
@@ -468,43 +490,371 @@ with col3:
     else:
         st.metric("Compra perecederos", "€420", "Confianza: 82%")
 
-# ── Sección de tendencias históricas ──────────────────────────────────────────
-st.header("📈 Análisis de Tendencias")
+# ── Sección de análisis histórico ────────────────────────────────────────────
+st.divider()
+st.header("📈 Análisis histórico y patrones")
+st.caption("Visualización longitudinal de ventas, personal y perecederos con datos de 2 años.")
 
-# Generar datos demo
 demo_data = generate_demo_data()
 
-tab1, tab2, tab3 = st.tabs(["Ventas", "Personal", "Productos"])
+tab_diario, tab_mensual, tab_anual, tab_patrones = st.tabs([
+    "📅 Vista Diaria",
+    "📊 Vista Mensual",
+    "🗓️ Vista Anual",
+    "🔍 Patrones IA"
+])
 
-with tab1:
-    st.subheader("Evolución de Ventas")
-    fig_sales = px.line(demo_data, x='date', y='sales', 
-                       title='Ventas Diarias (Demo)', 
-                       labels={'sales': 'Ventas (€)', 'date': 'Fecha'})
-    st.plotly_chart(fig_sales, use_container_width=True)
-    
-    # Métricas adicionales
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.metric("Promedio mensual", f"€{demo_data['sales'].mean():.0f}")
-    with col2:
-        st.metric("Día más alto", f"€{demo_data['sales'].max():.0f}")
-    with col3:
-        st.metric("Tendencia", "+8.5%")
+# ── VISTA DIARIA ──────────────────────────────────────────────────────────────
+with tab_diario:
+    st.caption("📊 Evolución día a día de ventas, personal y reservas")
 
-with tab2:
-    st.subheader("Optimización de Personal")
-    fig_staff = px.bar(demo_data.groupby('date').agg({'staff': 'mean'}).reset_index().tail(7),
-                      x='date', y='staff',
-                      title='Personal Necesario - Última Semana (Demo)')
-    st.plotly_chart(fig_staff, use_container_width=True)
+    # KPIs rápidos
+    k1, k2, k3, k4 = st.columns(4)
+    k1.metric("Venta media/día", f"€{demo_data['sales'].mean():.0f}")
+    k2.metric("Día récord", f"€{demo_data['sales'].max():.0f}")
+    k3.metric("Reservas medias", f"{demo_data['reservations'].mean():.0f}")
+    k4.metric("Días con evento", f"{demo_data['has_event'].sum()}")
 
-with tab3:
-    st.subheader("Gestión de Inventario")
-    # Gráfico de distribución
-    fig_perishables = px.histogram(demo_data, x='perishables', nbins=20,
-                                  title='Distribución de Compra de Perecederos (Demo)')
-    st.plotly_chart(fig_perishables, use_container_width=True)
+    # Gráfico principal: ventas diarias con área
+    fig_daily = go.Figure()
+    fig_daily.add_trace(go.Scatter(
+        x=demo_data['date'], y=demo_data['sales'],
+        mode='lines', name='Ventas €',
+        line=dict(color='#00d4ff', width=1.5),
+        fill='tozeroy',
+        fillcolor='rgba(0,212,255,0.08)',
+        hovertemplate='<b>%{x|%d %b %Y}</b><br>Ventas: €%{y:,.0f}<extra></extra>'
+    ))
+    # Media móvil 7 días
+    fig_daily.add_trace(go.Scatter(
+        x=demo_data['date'],
+        y=demo_data['sales'].rolling(7, min_periods=1).mean(),
+        mode='lines', name='Media 7 días',
+        line=dict(color='#ff6b35', width=2, dash='dot'),
+        hovertemplate='Media: €%{y:,.0f}<extra></extra>'
+    ))
+    fig_daily.update_layout(**PLOT_LAYOUT, title='Evolución diaria de ventas (2 años)',
+                            xaxis_title='Fecha', yaxis_title='Ventas (€)',
+                            hovermode='x unified')
+    st.plotly_chart(fig_daily, use_container_width=True)
+
+    col_a, col_b = st.columns(2)
+    with col_a:
+        # Personal por día de semana
+        dias_label = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
+        staff_by_dow = demo_data.groupby('weekday')['staff'].mean().reset_index()
+        staff_by_dow['dia'] = staff_by_dow['weekday'].map(lambda x: dias_label[x])
+        fig_staff = go.Figure(go.Bar(
+            x=staff_by_dow['dia'], y=staff_by_dow['staff'],
+            marker=dict(
+                color=staff_by_dow['staff'],
+                colorscale=[[0,'#001a33'],[0.5,'#0099ff'],[1,'#00d4ff']],
+                showscale=False
+            ),
+            text=staff_by_dow['staff'].round(1),
+            textposition='outside',
+            hovertemplate='%{x}: %{y:.1f} personas<extra></extra>'
+        ))
+        fig_staff.update_layout(**PLOT_LAYOUT, title='Personal medio por día de semana',
+                                yaxis_title='Personas', height=320)
+        st.plotly_chart(fig_staff, use_container_width=True)
+
+    with col_b:
+        # Reservas vs ventas scatter
+        fig_scatter = go.Figure(go.Scatter(
+            x=demo_data['reservations'], y=demo_data['sales'],
+            mode='markers',
+            marker=dict(
+                size=5,
+                color=demo_data['has_event'],
+                colorscale=[[0,'#0055aa'],[1,'#ff6b35']],
+                opacity=0.7,
+                showscale=True,
+                colorbar=dict(title='Evento', tickvals=[0,1], ticktext=['No','Sí'],
+                              tickfont=dict(color='#00d4ff'), title_font=dict(color='#00d4ff'))
+            ),
+            hovertemplate='Reservas: %{x}<br>Ventas: €%{y:,.0f}<extra></extra>'
+        ))
+        fig_scatter.update_layout(**PLOT_LAYOUT, title='Reservas vs Ventas',
+                                  xaxis_title='Reservas', yaxis_title='Ventas (€)', height=320)
+        st.plotly_chart(fig_scatter, use_container_width=True)
+
+# ── VISTA MENSUAL ─────────────────────────────────────────────────────────────
+with tab_mensual:
+    st.caption("📈 Tendencias y patrones por meses")
+
+    monthly = demo_data.groupby(['year','month']).agg(
+        ventas_total=('sales','sum'),
+        ventas_media=('sales','mean'),
+        reservas_media=('reservations','mean'),
+        eventos=('has_event','sum')
+    ).reset_index()
+    monthly['periodo'] = monthly.apply(lambda r: f"{int(r.year)}-{int(r.month):02d}", axis=1)
+
+    # Barras mensuales con línea de tendencia
+    fig_monthly = go.Figure()
+    fig_monthly.add_trace(go.Bar(
+        x=monthly['periodo'], y=monthly['ventas_total'],
+        name='Ventas totales',
+        marker=dict(color='rgba(0,153,255,0.7)', line=dict(color='#00d4ff', width=1)),
+        hovertemplate='<b>%{x}</b><br>Total: €%{y:,.0f}<extra></extra>'
+    ))
+    fig_monthly.add_trace(go.Scatter(
+        x=monthly['periodo'], y=monthly['ventas_media'] * 30,
+        mode='lines+markers', name='Tendencia',
+        line=dict(color='#ff6b35', width=2),
+        marker=dict(size=6),
+        hovertemplate='Tendencia: €%{y:,.0f}<extra></extra>'
+    ))
+    fig_monthly.update_layout(**PLOT_LAYOUT, title='Ventas mensuales acumuladas',
+                              xaxis_title='Mes', yaxis_title='Ventas (€)',
+                              barmode='overlay', hovermode='x unified')
+    fig_monthly.update_xaxes(tickangle=-45)
+    st.plotly_chart(fig_monthly, use_container_width=True)
+
+    col_m1, col_m2 = st.columns(2)
+    with col_m1:
+        # Ventas medias por mes del año (estacionalidad)
+        seasonality = demo_data.groupby('month')['sales'].mean().reset_index()
+        meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']
+        seasonality['mes_label'] = seasonality['month'].map(lambda x: meses[x-1])
+        fig_season = go.Figure(go.Scatter(
+            x=seasonality['mes_label'], y=seasonality['sales'],
+            mode='lines+markers',
+            line=dict(color='#00d4ff', width=3),
+            marker=dict(size=10, color='#66ccff',
+                        line=dict(color='#000a1a', width=2)),
+            fill='tozeroy', fillcolor='rgba(0,212,255,0.06)',
+            hovertemplate='%{x}: €%{y:,.0f}<extra></extra>'
+        ))
+        fig_season.update_layout(**PLOT_LAYOUT, title='Estacionalidad mensual (venta media/día)',
+                                 yaxis_title='€/día', height=320)
+        st.plotly_chart(fig_season, use_container_width=True)
+
+    with col_m2:
+        # Eventos por mes
+        events_month = demo_data.groupby('month')['has_event'].sum().reset_index()
+        events_month['mes_label'] = events_month['month'].map(lambda x: meses[x-1])
+        fig_ev = go.Figure(go.Bar(
+            x=events_month['mes_label'], y=events_month['has_event'],
+            marker=dict(
+                color=events_month['has_event'],
+                colorscale=[[0,'#001a33'],[1,'#ff6b35']],
+                showscale=False
+            ),
+            text=events_month['has_event'],
+            textposition='outside',
+            hovertemplate='%{x}: %{y} eventos<extra></extra>'
+        ))
+        fig_ev.update_layout(**PLOT_LAYOUT, title='Eventos especiales por mes',
+                             yaxis_title='Nº eventos', height=320)
+        st.plotly_chart(fig_ev, use_container_width=True)
+
+# ── VISTA ANUAL ───────────────────────────────────────────────────────────────
+with tab_anual:
+    st.caption("🗓️ Resumen anual y comparativas")
+
+    yearly = demo_data.groupby('year').agg(
+        ventas_total=('sales','sum'),
+        ventas_media=('sales','mean'),
+        reservas_media=('reservations','mean'),
+        total_eventos=('has_event','sum'),
+        personal_medio=('staff','mean')
+    ).reset_index()
+
+    # KPIs anuales
+    years = yearly['year'].tolist()
+    if len(years) >= 2:
+        growth = (yearly.iloc[-1]['ventas_total'] / yearly.iloc[-2]['ventas_total'] - 1) * 100
+        growth_str = f"+{growth:.1f}%" if growth >= 0 else f"{growth:.1f}%"
+    else:
+        growth_str = "N/A"
+
+    ka1, ka2, ka3, ka4 = st.columns(4)
+    ka1.metric(f"Ventas {years[0]}", f"€{yearly.iloc[0]['ventas_total']:,.0f}")
+    if len(years) >= 2:
+        ka2.metric(f"Ventas {years[1]}", f"€{yearly.iloc[1]['ventas_total']:,.0f}", growth_str)
+    ka3.metric("Personal medio", f"{yearly['personal_medio'].mean():.1f} pers.")
+    ka4.metric("Total eventos", f"{int(yearly['total_eventos'].sum())}")
+
+    col_y1, col_y2 = st.columns([3, 2])
+    with col_y1:
+        # Comparativa barras por año con desglose mensual
+        monthly_year = demo_data.groupby(['year','month'])['sales'].sum().reset_index()
+        meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']
+        monthly_year['mes_label'] = monthly_year['month'].map(lambda x: meses[x-1])
+        fig_cmp = go.Figure()
+        colors_year = ['#0099ff', '#00d4ff']
+        for i, yr in enumerate(sorted(demo_data['year'].unique())):
+            yr_data = monthly_year[monthly_year['year'] == yr]
+            fig_cmp.add_trace(go.Bar(
+                x=yr_data['mes_label'], y=yr_data['sales'],
+                name=str(yr),
+                marker_color=colors_year[i % 2],
+                opacity=0.85,
+                hovertemplate=f'<b>{yr}</b> %{{x}}: €%{{y:,.0f}}<extra></extra>'
+            ))
+        fig_cmp.update_layout(**PLOT_LAYOUT, title='Ventas mensuales: comparativa anual',
+                              barmode='group', xaxis_title='Mes', yaxis_title='€')
+        st.plotly_chart(fig_cmp, use_container_width=True)
+
+    with col_y2:
+        # Radar / polar de estacionalidad por año
+        meses_radar = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic','Ene']
+        fig_polar = go.Figure()
+        for i, yr in enumerate(sorted(demo_data['year'].unique())):
+            yr_data = demo_data[demo_data['year'] == yr].groupby('month')['sales'].mean().tolist()
+            yr_data_closed = yr_data + [yr_data[0]]
+            fig_polar.add_trace(go.Scatterpolar(
+                r=yr_data_closed, theta=meses_radar, fill='toself',
+                name=str(yr),
+                line=dict(color=colors_year[i % 2], width=2),
+                fillcolor=f'rgba({["0,153,255","0,212,255"][i%2]}, 0.12)'
+            ))
+        fig_polar.update_layout(
+            paper_bgcolor='rgba(0,10,26,0)', plot_bgcolor='rgba(0,10,26,0)',
+            font=dict(color='#00d4ff'),
+            polar=dict(
+                bgcolor='rgba(0,10,26,0.6)',
+                angularaxis=dict(color='#00d4ff', gridcolor='rgba(0,212,255,0.2)'),
+                radialaxis=dict(color='#00d4ff', gridcolor='rgba(0,212,255,0.2)', showticklabels=False)
+            ),
+            legend=dict(bgcolor='rgba(0,10,26,0.7)', bordercolor='rgba(0,212,255,0.3)', borderwidth=1),
+            title=dict(text='Estacionalidad polar', font=dict(color='#66ccff')),
+            margin=dict(l=40, r=40, t=50, b=40), height=420
+        )
+        st.plotly_chart(fig_polar, use_container_width=True)
+
+# ── PATRONES IA ───────────────────────────────────────────────────────────────
+with tab_patrones:
+    st.caption("🔍 Patrones operativos y segmentación inteligente")
+
+    col_p1, col_p2 = st.columns(2)
+    with col_p1:
+        # Heatmap día de semana × mes
+        st.subheader("🔥 Mapa de calor: ventas")
+        dias_label = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom']
+        meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']
+        pivot = demo_data.pivot_table(values='sales', index='weekday', columns='month', aggfunc='mean')
+        pivot.index = [dias_label[i] for i in pivot.index]
+        pivot.columns = [meses[m-1] for m in pivot.columns]
+        fig_heat = go.Figure(go.Heatmap(
+            z=pivot.values, x=pivot.columns.tolist(), y=pivot.index.tolist(),
+            colorscale=[
+                [0.0, '#000a1a'], [0.2, '#001a33'], [0.5, '#0055aa'],
+                [0.75, '#00d4ff'], [1.0, '#66ffff']
+            ],
+            text=[[f'€{v:.0f}' for v in row] for row in pivot.values],
+            texttemplate='%{text}',
+            hovertemplate='%{y} · %{x}<br>€%{z:,.0f}<extra></extra>',
+            showscale=True,
+            colorbar=dict(title='Ventas €', tickfont=dict(color='#00d4ff'),
+                          title_font=dict(color='#00d4ff'))
+        ))
+        fig_heat.update_layout(**PLOT_LAYOUT, title='Ventas medias por día y mes', height=380)
+        st.plotly_chart(fig_heat, use_container_width=True)
+
+    with col_p2:
+        # Box plot: con evento vs sin evento
+        st.subheader("🎉 Días con vs sin evento")
+        fig_box = go.Figure()
+        fig_box.add_trace(go.Box(
+            y=demo_data[demo_data['has_event']==0]['sales'],
+            name='Sin evento',
+            marker_color='#0099ff',
+            line_color='#00d4ff',
+            fillcolor='rgba(0,153,255,0.25)',
+            boxmean='sd',
+            hovertemplate='Sin evento: €%{y:,.0f}<extra></extra>'
+        ))
+        fig_box.add_trace(go.Box(
+            y=demo_data[demo_data['has_event']==1]['sales'],
+            name='Con evento',
+            marker_color='#ff6b35',
+            line_color='#ffaa00',
+            fillcolor='rgba(255,107,53,0.25)',
+            boxmean='sd',
+            hovertemplate='Con evento: €%{y:,.0f}<extra></extra>'
+        ))
+        fig_box.update_layout(**PLOT_LAYOUT, title='Distribución de ventas por tipo de día',
+                              yaxis_title='Ventas (€)', height=380)
+        st.plotly_chart(fig_box, use_container_width=True)
+
+    # Perfil semanal de los 3 KPIs
+    st.subheader("📊 Perfil semanal de KPIs")
+    dias_label = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom']
+    weekly_kpi = demo_data.groupby('weekday').agg(
+        ventas=('sales','mean'),
+        reservas=('reservations','mean'),
+        personal=('staff','mean')
+    ).reset_index()
+    weekly_kpi['dia'] = weekly_kpi['weekday'].map(lambda x: dias_label[x])
+
+    fig_kpi = go.Figure()
+    fig_kpi.add_trace(go.Bar(
+        x=weekly_kpi['dia'], y=weekly_kpi['ventas'],
+        name='Ventas €', yaxis='y',
+        marker_color='rgba(0,212,255,0.7)',
+        hovertemplate='%{x}: €%{y:,.0f}<extra></extra>'
+    ))
+    fig_kpi.add_trace(go.Scatter(
+        x=weekly_kpi['dia'], y=weekly_kpi['reservas'],
+        name='Reservas', yaxis='y2', mode='lines+markers',
+        line=dict(color='#ff6b35', width=2),
+        marker=dict(size=8),
+        hovertemplate='Reservas: %{y:.0f}<extra></extra>'
+    ))
+    fig_kpi.add_trace(go.Scatter(
+        x=weekly_kpi['dia'], y=weekly_kpi['personal'],
+        name='Personal', yaxis='y3', mode='lines+markers',
+        line=dict(color='#00ff88', width=2, dash='dash'),
+        marker=dict(size=8, symbol='diamond'),
+        hovertemplate='Personal: %{y:.1f}<extra></extra>'
+    ))
+    fig_kpi.update_layout(
+        **{k: v for k, v in PLOT_LAYOUT.items() if k not in ('height',)},
+        height=380,
+        title='Ventas, reservas y personal por día de semana',
+        yaxis=dict(title='Ventas €', gridcolor='rgba(0,212,255,0.1)',
+                   linecolor='rgba(0,212,255,0.3)', tickfont=dict(color='#00d4ff')),
+        yaxis2=dict(title='Reservas', overlaying='y', side='right',
+                    gridcolor='rgba(255,107,53,0.1)', tickfont=dict(color='#ff6b35'),
+                    showgrid=False),
+        yaxis3=dict(title='Personal', overlaying='y', side='right', position=0.85,
+                    tickfont=dict(color='#00ff88'), showgrid=False),
+        hovermode='x unified'
+    )
+    st.plotly_chart(fig_kpi, use_container_width=True)
+
+    # Segmentación de días por rendimiento
+    st.subheader("🔍 Segmentación de días por rendimiento")
+    import numpy as np
+    p33 = demo_data['sales'].quantile(0.33)
+    p66 = demo_data['sales'].quantile(0.66)
+    demo_data['segmento'] = pd.cut(
+        demo_data['sales'],
+        bins=[-float('inf'), p33, p66, float('inf')],
+        labels=['🔵 Día Bajo', '🟡 Día Normal', '🔴 Día Alto']
+    )
+    seg_counts = demo_data['segmento'].value_counts().sort_index()
+    fig_seg = go.Figure(go.Pie(
+        labels=seg_counts.index.tolist(),
+        values=seg_counts.values.tolist(),
+        hole=0.55,
+        marker=dict(colors=['#0055aa', '#0099ff', '#00d4ff'],
+                    line=dict(color='#000a1a', width=3)),
+        textinfo='label+percent',
+        textfont=dict(color='#00d4ff', size=13),
+        hovertemplate='%{label}: %{value} días (%{percent})<extra></extra>'
+    ))
+    fig_seg.update_layout(
+        paper_bgcolor='rgba(0,10,26,0)', plot_bgcolor='rgba(0,10,26,0)',
+        font=dict(color='#00d4ff'),
+        title=dict(text='Distribución de días por rendimiento', font=dict(color='#66ccff')),
+        legend=dict(bgcolor='rgba(0,10,26,0.7)', bordercolor='rgba(0,212,255,0.3)', borderwidth=1),
+        margin=dict(l=20, r=20, t=50, b=20), height=350
+    )
+    st.plotly_chart(fig_seg, use_container_width=True)
 
 # ── Sección de ROI y ahorros ───────────────────────────────────────────────────
 st.header("💎 Impacto Económico")
