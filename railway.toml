@@ -1,16 +1,16 @@
-# ══════════════════════════════════════════════════════════════════════════════
-# railway.toml — Servicio API (midas-api)
-#
-# Servicio 1 de 2. Ver railway.dashboard.toml para el Dashboard.
-# Railway usará este archivo por defecto en el servicio API.
-# ══════════════════════════════════════════════════════════════════════════════
-
 [build]
 builder = "dockerfile"
-dockerfilePath = "docker/Dockerfile.api"
+dockerfilePath = "docker/Dockerfile"
+buildCommand = "echo 'Building MIDAS Dashboard...'"
 
 [deploy]
-healthcheckPath = "/health"
+healthcheckPath = "/_stcore/health"
 healthcheckTimeout = 300
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
+startCommand = "streamlit run dashboard/app.py --server.port $PORT --server.address 0.0.0.0"
+
+[env]
+# Variables de entorno por defecto
+STREAMLIT_SERVER_HEADLESS = "true"
+STREAMLIT_SERVER_ENABLE_STATIC_SERVING = "true"
