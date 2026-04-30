@@ -491,7 +491,7 @@ col1, col2, col3 = st.columns(3)
 
 with col1:
     st.subheader("💰 Ventas")
-    sales_prediction = calculate_prediction("sales", fecha_seleccionada, clima, reservas, evento, personas_evento, precio_evento)
+    sales_prediction = calculate_prediction("sales", prediction_date, weather, reservations, has_event, event_people, event_price)
     if sales_prediction:
         st.metric(
             "Ventas estimadas",
@@ -503,7 +503,7 @@ with col1:
 
 with col2:
     st.subheader("👥 Personal")
-    staff_prediction = calculate_prediction("staff", fecha_seleccionada, clima, reservas, evento, personas_evento, precio_evento)
+    staff_prediction = calculate_prediction("staff", prediction_date, weather, reservations, has_event, event_people, event_price)
     if staff_prediction:
         st.metric(
             "Personal necesario", 
@@ -515,7 +515,7 @@ with col2:
 
 with col3:
     st.subheader("🥬 Perecederos")
-    perishables_prediction = calculate_prediction("perishables", fecha_seleccionada, clima, reservas, evento, personas_evento, precio_evento)
+    perishables_prediction = calculate_prediction("perishables", prediction_date, weather, reservations, has_event, event_people, event_price)
     if perishables_prediction:
         st.metric(
             "Compra perecederos",
