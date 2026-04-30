@@ -1,4 +1,10 @@
 
+# ══════════════════════════════════════════════════════════════════════════════
+# MIDAS Dashboard - Sistema de Predicción de Restaurante
+# Versión: 2.0.1 - Fixed Railway deployment issues 
+# Última actualización: 2026-04-30 13:50 - Cache busting fix
+# ══════════════════════════════════════════════════════════════════════════════
+
 import streamlit as st
 import pandas as pd
 import plotly.express as px
