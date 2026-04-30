@@ -93,6 +93,25 @@ weather = st.sidebar.selectbox(
 
 is_holiday = st.sidebar.checkbox("¿Es día festivo?")
 
+st.sidebar.markdown("---")
+st.sidebar.subheader("📅 Eventos y Reservas")
+
+has_event = st.sidebar.checkbox("¿Hay evento especial?")
+event_type = None
+if has_event:
+    event_type = st.sidebar.selectbox(
+        "Tipo de evento",
+        ["cumpleaños", "boda", "corporativo", "reunion", "otro"]
+    )
+
+reservations = st.sidebar.number_input(
+    "Nº de reservas",
+    min_value=0,
+    max_value=300,
+    value=0,
+    step=5
+)
+
 # ── Sección de predicciones en tiempo real ─────────────────────────────────────
 st.header("📊 Predicciones del Día")
 
@@ -102,7 +121,10 @@ prediction_data = {
     "day_of_week": prediction_date.weekday(),
     "month": prediction_date.month,
     "is_holiday": is_holiday,
-    "weather": weather
+    "weather": weather,
+    "has_event": has_event,
+    "event_type": event_type,
+    "reservations": reservations
 }
 
 # Obtener predicciones
