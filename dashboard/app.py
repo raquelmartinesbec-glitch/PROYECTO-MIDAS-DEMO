@@ -111,6 +111,7 @@ with st.sidebar:
         event_price = 0.0
 
     st.divider()
+    predict_btn = st.button("🔮 Generar Predicción", type="primary", use_container_width=True)
 
 # ── Sección de predicciones en tiempo real ─────────────────────────────────────
 st.header("📊 Predicciones del Día")
