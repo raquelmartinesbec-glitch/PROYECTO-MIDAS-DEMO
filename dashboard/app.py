@@ -562,7 +562,7 @@ if not sample_data.empty:
             text=sample_data['staff'].round(0),
             textposition='outside'
         ))
-        fig_staff.update_layout(**PLOT_LAYOUT, title='Personal por escenario', yaxis_title='Personas', height=300)
+        fig_staff.update_layout(**PLOT_LAYOUT, title='Personal por escenario', yaxis_title='Personas')
         st.plotly_chart(fig_staff, use_container_width=True)
 else:
     st.info("📊 Predicciones calculadas localmente - no se requiere conexión externa")
