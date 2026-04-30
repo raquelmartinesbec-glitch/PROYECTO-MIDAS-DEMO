@@ -94,7 +94,7 @@ class TestConfigurationFiles:
         assert pyproject_path.exists(), "pyproject.toml faltante"
         
         # Cargar y validar contenido
-        with open(pyproject_path) as f:
+        with open(pyproject_path, encoding='utf-8') as f:
             config = toml.load(f)
             
         # Verificar secciones críticas
@@ -128,7 +128,7 @@ class TestConfigurationFiles:
         for config_path in railway_configs:
             full_path = project_root / config_path
             if full_path.exists():
-                with open(full_path) as f:
+                with open(full_path, encoding='utf-8') as f:
                     content = f.read()
                     
                 # Verificar contenido crítico
@@ -145,7 +145,7 @@ class TestConfigurationFiles:
         dockerfile_path = project_root / "docker" / "Dockerfile"
         
         if dockerfile_path.exists():
-            with open(dockerfile_path) as f:
+            with open(dockerfile_path, encoding='utf-8') as f:
                 content = f.read()
                 
             # Verificar instrucciones básicas
@@ -171,7 +171,7 @@ class TestConfigurationFiles:
         for req_file in req_files:
             full_path = project_root / req_file
             if full_path.exists():
-                with open(full_path) as f:
+                with open(full_path, encoding='utf-8') as f:
                     content = f.read().lower()
                     
                 # Verificar dependencias críticas
@@ -252,7 +252,7 @@ class TestScripts:
             assert result.returncode == 0, f"Error de sintaxis en run_local.py: {result.stderr.decode()}"
             
             # Verificar que contenga lógica de Streamlit
-            with open(script_path) as f:
+            with open(script_path, encoding='utf-8') as f:
                 content = f.read()
                 
             assert "streamlit" in content.lower(), "Script no contiene referencia a Streamlit"
@@ -272,7 +272,7 @@ class TestScripts:
         for script_path in script_paths:
             full_path = project_root / script_path
             if full_path.exists():
-                with open(full_path) as f:
+                with open(full_path, encoding='utf-8') as f:
                     content = f.read()
                     
                 # Verificar comandos básicos de deploy
