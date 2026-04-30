@@ -10,7 +10,7 @@ import os
 app = FastAPI(
     title="MIDAS - Sistema de Predicción",
     description="API de predicción para restaurante",
-    version="1.0.0",
+    version="1.0.1-sync",
     docs_url="/docs",
     redoc_url="/redoc"
 )
@@ -41,7 +41,8 @@ class PredictionResponse(BaseModel):
 async def root():
     return {
         "message": "MIDAS - Sistema de Predicción API",
-        "version": "1.0.0",
+        "version": "1.0.1-sync",
+        "release": "sync-2026-04-30-01",
         "status": "running",
         "endpoints": ["/docs", "/health", "/predict/sales", "/predict/staff", "/predict/perishables", "/predict/full", "/models"]
     }
