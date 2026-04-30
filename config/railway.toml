@@ -1,0 +1,23 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# railway.toml — MIDAS Dashboard Independiente
+#
+# Configuración optimizada para Railway.app
+# Dashboard autosuficiente sin dependencias externas
+# ══════════════════════════════════════════════════════════════════════════════
+
+[build]
+builder = "dockerfile"
+dockerfilePath = "docker/Dockerfile"
+buildCommand = "echo 'Building MIDAS Dashboard...'"
+
+[deploy]
+healthcheckPath = "/_stcore/health"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
+startCommand = "streamlit run src/dashboard/app.py --server.port $PORT --server.address 0.0.0.0"
+
+[env]
+# Variables de entorno por defecto (pueden sobreescribirse en Railway UI)
+STREAMLIT_SERVER_HEADLESS = "true"
+STREAMLIT_SERVER_ENABLE_STATIC_SERVING = "true"
