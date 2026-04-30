@@ -320,7 +320,6 @@ API_URL = os.getenv("API_URL", "http://localhost:8000")
 DEMO_MODE = os.getenv("DEMO_MODE", "false").lower() == "true"
 
 # ── Funciones auxiliares ───────────────────────────────────────────────────────
-@st.cache_data(ttl=60)
 def call_api(endpoint, data=None):
     """
     Llamada a la API con cache básico

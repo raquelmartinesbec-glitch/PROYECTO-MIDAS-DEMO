@@ -17,8 +17,16 @@ app = FastAPI(
 
 # ── Modelos de datos ──────────────────────────────────────────────────────────
 class SimplePredictionRequest(BaseModel):
-    target_date: str = Field(default="2026-04-28", description="Fecha (YYYY-MM-DD)")
-    scenario: str = Field(default="normal", description="Escenario: normal, busy, quiet")
+    date: str = Field(default="2026-04-30")
+    day_of_week: int = Field(default=0)
+    month: int = Field(default=1)
+    is_holiday: bool = Field(default=False)
+    weather: str = Field(default="sol")
+    has_event: bool = Field(default=False)
+    event_intensity: int = Field(default=0)
+    event_people: int = Field(default=0)
+    event_price: float = Field(default=0.0)
+    reservations: int = Field(default=15)
 
 class PredictionResponse(BaseModel):
     date: str
@@ -48,73 +56,76 @@ async def health_check():
 
 @app.post("/predict/sales", response_model=PredictionResponse)
 async def predict_sales(request: SimplePredictionRequest = None):
-    # Simulación inteligente según escenario
-    scenario_multiplier = {
-        "quiet": 0.8,
-        "normal": 1.0, 
-        "busy": 1.4
-    }
-    
-    base_sales = 2450
-    multiplier = scenario_multiplier.get(request.scenario if request else "normal", 1.0)
-    predicted_value = base_sales * multiplier
-    
+    req = request or SimplePredictionRequest()
+    base = 1800.0
+    # Fin de semana
+    if req.day_of_week >= 5:
+        base += 600
+    # Estacionalidad mensual
+    seasonal = {1:-200,2:-150,3:100,4:150,5:200,6:300,7:350,8:320,9:200,10:100,11:-50,12:400}
+    base += seasonal.get(req.month, 0)
+    # Clima
+    weather_mod = {"sol": 100, "nublado": 0, "lluvia": -200, "nieve": -350}
+    base += weather_mod.get(req.weather, 0)
+    # Festivo
+    if req.is_holiday:
+        base += 300
+    # Reservas
+    base += req.reservations * 8
+    # Evento
+    if req.has_event:
+        base += req.event_people * req.event_price * 0.4 + req.event_intensity * 150
     return PredictionResponse(
-        date=request.target_date if request else "2026-04-28",
-        type="sales",
-        value=round(predicted_value, 2),
-        confidence=0.92,
-        timestamp=datetime.now().isoformat()
+        date=req.date, type="sales",
+        value=round(max(500.0, base), 2),
+        confidence=0.92, timestamp=datetime.now().isoformat()
     )
 
 @app.post("/predict/staff", response_model=PredictionResponse)
 async def predict_staff(request: SimplePredictionRequest = None):
-    scenario_staff = {
-        "quiet": 6,
-        "normal": 8,
-        "busy": 12
-    }
-    
-    predicted_value = scenario_staff.get(request.scenario if request else "normal", 8)
-    
+    req = request or SimplePredictionRequest()
+    base = 6.0
+    if req.day_of_week >= 5:
+        base += 2
+    if req.reservations > 30:
+        base += 1
+    if req.reservations > 60:
+        base += 1
+    if req.has_event:
+        base += max(1, req.event_intensity)
+    if req.is_holiday:
+        base += 1
     return PredictionResponse(
-        date=request.target_date if request else "2026-04-28",
-        type="staff",
-        value=predicted_value,
-        confidence=0.89,
-        timestamp=datetime.now().isoformat()
+        date=req.date, type="staff",
+        value=round(max(4.0, base), 0),
+        confidence=0.89, timestamp=datetime.now().isoformat()
     )
 
 @app.post("/predict/perishables", response_model=PredictionResponse)
 async def predict_perishables(request: SimplePredictionRequest = None):
-    scenario_perishables = {
-        "quiet": 320,
-        "normal": 450,
-        "busy": 620
-    }
-    
-    predicted_value = scenario_perishables.get(request.scenario if request else "normal", 450)
-    
+    req = request or SimplePredictionRequest()
+    base = 350.0
+    if req.day_of_week >= 5:
+        base += 80
+    seasonal = {1:-50,2:-30,3:20,4:30,5:50,6:80,7:90,8:80,9:40,10:20,11:-20,12:100}
+    base += seasonal.get(req.month, 0)
+    base += req.reservations * 2
+    if req.has_event:
+        base += req.event_people * 1.2
     return PredictionResponse(
-        date=request.target_date if request else "2026-04-28",
-        type="perishables", 
-        value=predicted_value,
-        confidence=0.86,
-        timestamp=datetime.now().isoformat()
+        date=req.date, type="perishables",
+        value=round(max(150.0, base), 2),
+        confidence=0.86, timestamp=datetime.now().isoformat()
     )
 
 @app.post("/predict/full")
 async def predict_full(request: SimplePredictionRequest = None):
-    if not request:
-        request = SimplePredictionRequest()
-    
-    sales = await predict_sales(request)
-    staff = await predict_staff(request) 
-    perishables = await predict_perishables(request)
-    
+    req = request or SimplePredictionRequest()
+    sales = await predict_sales(req)
+    staff = await predict_staff(req)
+    perishables = await predict_perishables(req)
     return {
-        "date": request.target_date,
-        "scenario": request.scenario,
+        "date": req.date,
         "predictions": {
             "sales": sales.dict(),
             "staff": staff.dict(),
