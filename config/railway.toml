@@ -11,11 +11,11 @@ dockerfilePath = "docker/Dockerfile"
 buildCommand = "echo 'Building MIDAS Dashboard...'"
 
 [deploy]
-healthcheckPath = "/_stcore/health"
-healthcheckTimeout = 300
+healthcheckPath = "/"
+healthcheckTimeout = 120
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
-startCommand = "streamlit run src/dashboard/app.py --server.port $PORT --server.address 0.0.0.0"
+startCommand = "streamlit run dashboard/app.py --server.port $PORT --server.address 0.0.0.0"
 
 [env]
 # Variables de entorno por defecto (pueden sobreescribirse en Railway UI)

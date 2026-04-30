@@ -29,7 +29,7 @@ COPY requirements/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copiar código fuente
-COPY src/ ./src/
+COPY dashboard/ ./dashboard/
 COPY docker/streamlit_config.toml ~/.streamlit/config.toml
 
 # Crear usuario no-root para seguridad
