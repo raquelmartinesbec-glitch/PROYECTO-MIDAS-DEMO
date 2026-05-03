@@ -476,6 +476,23 @@ with st.sidebar:
     st.divider()
     predict_btn = st.button("🔮 Generar Predicción", type="primary", use_container_width=True)
 
+# ── Inicializar estado de sesión ──────────────────────────────────────────────
+if 'predictions_generated' not in st.session_state:
+    st.session_state.predictions_generated = False
+if 'current_predictions' not in st.session_state:
+    st.session_state.current_predictions = {}
+
+# ── Manejar clic del botón de predicción ──────────────────────────────────────
+if predict_btn:
+    st.session_state.predictions_generated = True
+    # Generar nuevas predicciones
+    st.session_state.current_predictions = {
+        'sales': calculate_prediction("sales", prediction_date, weather, reservations, has_event, event_people, event_price),
+        'staff': calculate_prediction("staff", prediction_date, weather, reservations, has_event, event_people, event_price),
+        'perishables': calculate_prediction("perishables", prediction_date, weather, reservations, has_event, event_people, event_price)
+    }
+    st.success("✅ Predicciones generadas exitosamente")
+
 # ── Sección de predicciones en tiempo real ─────────────────────────────────────
 st.header("📊 Predicciones del Día")
 
@@ -498,8 +515,8 @@ col1, col2, col3 = st.columns(3)
 
 with col1:
     st.subheader("💰 Ventas")
-    sales_prediction = calculate_prediction("sales", prediction_date, weather, reservations, has_event, event_people, event_price)
-    if sales_prediction:
+    if st.session_state.predictions_generated and st.session_state.current_predictions.get('sales'):
+        sales_prediction = st.session_state.current_predictions['sales']
         st.metric(
             "Ventas estimadas",
             f"€{sales_prediction['value']:.0f}",
@@ -507,11 +524,12 @@ with col1:
         )
     else:
         st.metric("Ventas estimadas", "€2,450", "Confianza: 85%")
+        st.caption("🔮 Presiona 'Generar Predicción' para actualizar")
 
 with col2:
     st.subheader("👥 Personal")
-    staff_prediction = calculate_prediction("staff", prediction_date, weather, reservations, has_event, event_people, event_price)
-    if staff_prediction:
+    if st.session_state.predictions_generated and st.session_state.current_predictions.get('staff'):
+        staff_prediction = st.session_state.current_predictions['staff']
         st.metric(
             "Personal necesario", 
             f"{staff_prediction['value']:.0f} personas",
@@ -519,11 +537,12 @@ with col2:
         )
     else:
         st.metric("Personal necesario", "8 personas", "Confianza: 78%")
+        st.caption("🔮 Presiona 'Generar Predicción' para actualizar")
 
 with col3:
     st.subheader("🥬 Perecederos")
-    perishables_prediction = calculate_prediction("perishables", prediction_date, weather, reservations, has_event, event_people, event_price)
-    if perishables_prediction:
+    if st.session_state.predictions_generated and st.session_state.current_predictions.get('perishables'):
+        perishables_prediction = st.session_state.current_predictions['perishables']
         st.metric(
             "Compra perecederos",
             f"€{perishables_prediction['value']:.0f}",
@@ -531,6 +550,7 @@ with col3:
         )
     else:
         st.metric("Compra perecederos", "€420", "Confianza: 82%")
+        st.caption("🔮 Presiona 'Generar Predicción' para actualizar")
 
 # ── Sección de análisis de predicciones ────────────────────────────
 st.divider()
