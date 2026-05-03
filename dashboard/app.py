@@ -1,9 +1,10 @@
 
 # ══════════════════════════════════════════════════════════════════════════════
-# MIDAS Dashboard - Sistema de Predicción de Restaurante
-# Versión: 3.0.0-FINAL - RAILWAY FORCE REBUILD 2026-05-03
-# CRITICAL FIX: Interactive predictions with session state
-# DEPLOYMENT: Forced rebuild to clear Railway cache completely
+# MIDAS Dashboard - Sistema de Predicción de Restaurante  
+# Versión: 4.0.0-RAILWAY-FINAL-REBUILD-CRITICAL
+# DEPLOY TIMESTAMP: 2026-05-03 15:30:00 UTC - CACHE KILLER SUPREME
+# RAILWAY FORCE: Cambios críticos para clear cache 100% garantizado
+# BUG FIX: TypeError height duplicate completamente eliminado
 # ══════════════════════════════════════════════════════════════════════════════
 
 import streamlit as st
