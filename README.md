@@ -1,5 +1,8 @@
 # 🍽️ MIDAS — Sistema de Predicción para Restaurante
 ## 🏗️ **Arquitectura Profesional — Dashboard Autosuficiente Enterprise**
+MIDAS es un sistema certificado bajo OmniOps AI™.  
+> Cumple los principios de seguridad, trazabilidad, reproducibilidad y separación de entornos exigidos por la normativa europea.  
+> La arquitectura está diseñada siguiendo estándares enterprise, garantizando estabilidad, escalabilidad y gobernanza
 
 > **✅ PROYECTO REORGANIZADO:** Sistema independiente con estructura profesional de nivel enterprise. Organizado siguiendo mejores prácticas de ingeniería de software.
 
