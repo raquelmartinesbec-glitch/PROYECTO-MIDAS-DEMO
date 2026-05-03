@@ -1,10 +1,9 @@
 
 # ══════════════════════════════════════════════════════════════════════════════
 # MIDAS Dashboard - Sistema de Predicción de Restaurante  
-# Versión: 4.0.0-RAILWAY-FINAL-REBUILD-CRITICAL
-# DEPLOY TIMESTAMP: 2026-05-03 15:30:00 UTC - CACHE KILLER SUPREME
-# RAILWAY FORCE: Cambios críticos para clear cache 100% garantizado
-# BUG FIX: TypeError height duplicate completamente eliminado
+# Versión: 5.0.0-NIXPACKS-SIMPLIFIED
+# RAILWAY OPTIMIZATION: Nixpacks build + simple configuration
+# DEPLOY: 2026-05-03 16:45:00 UTC - FINAL WORKING VERSION
 # ══════════════════════════════════════════════════════════════════════════════
 
 import streamlit as st

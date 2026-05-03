@@ -1,16 +1,17 @@
 # ══════════════════════════════════════════════════════════════════════════════
-# Dockerfile - MIDAS Dashboard Independiente
-# Optimizado para Railway.app con nueva estructura de directorios  
+# Dockerfile - MIDAS Dashboard RAILWAY OPTIMIZED
+# VERSION 5.0.0 - RAILWAY CRASH FIX - USER ROOT SIMPLIFIED
+# SIMPLIFIED: No user creation, direct port binding, streamlined
 # ══════════════════════════════════════════════════════════════════════════════
 
 FROM python:3.11-slim
 
 # Metadata
 LABEL maintainer="MIDAS Dashboard" \
-      version="2.0.0" \
-      description="Dashboard independiente para predicciones de restaurante"
+      version="5.0.0" \
+      description="Dashboard independiente Railway optimizado"
 
-# Variables de entorno
+# Variables de entorno esenciales
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
@@ -19,10 +20,11 @@ ENV PYTHONUNBUFFERED=1 \
 # Crear directorio de trabajo
 WORKDIR /app
 
-# Instalar dependencias del sistema (mínimas)
+# Instalar dependencias del sistema mínimas
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 
 # Copiar requirements e instalar dependencias Python
 COPY requirements/requirements.txt .
@@ -32,13 +34,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY dashboard/ ./dashboard/
 COPY docker/streamlit_config.toml ~/.streamlit/config.toml
 
-# Crear usuario no-root para seguridad
-RUN groupadd -r midas && useradd -r -g midas midas
-RUN chown -R midas:midas /app
-USER midas
+# Railway dynamic port exposure
+EXPOSE 8501
 
-# Exponer puerto dinámico
-EXPOSE $PORT
-
-# Comando por defecto (Railway sobreescribirá con startCommand)
-CMD ["streamlit", "run", "dashboard/app.py", "--server.address", "0.0.0.0"]
+# Comando optimizado para Railway (sin usuario, directo)
+CMD ["streamlit", "run", "dashboard/app.py", "--server.address", "0.0.0.0", "--server.port", "8501", "--server.headless", "true"]
