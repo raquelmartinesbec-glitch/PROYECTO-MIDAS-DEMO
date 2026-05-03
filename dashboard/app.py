@@ -1,9 +1,10 @@
 
 # ══════════════════════════════════════════════════════════════════════════════
 # MIDAS Dashboard - Sistema de Predicción de Restaurante  
-# Versión: 5.0.0-NIXPACKS-SIMPLIFIED
-# RAILWAY OPTIMIZATION: Nixpacks build + simple configuration
-# DEPLOY: 2026-05-03 16:45:00 UTC - FINAL WORKING VERSION
+# VERSION: 6.0.0-RAILWAY-FORCE-WEBHOOK-TRIGGER
+# RAILWAY DESCONNECT FIX: Forcing webhook trigger manually
+# DEPLOY: 2026-05-03 17:45:00 UTC - RAILWAY CONNECTION REPAIR
+# GITHUB→RAILWAY: Force detection of repository changes
 # ══════════════════════════════════════════════════════════════════════════════
 
 import streamlit as st
