@@ -1,270 +1,311 @@
-# 🍽️ MIDAS — Sistema de Predicción para Restaurante
-## 🏗️ **Arquitectura Profesional — Dashboard Autosuficiente Enterprise**
-MIDAS es un sistema certificado bajo OmniOps AI™.  
-Cumple los principios de seguridad, trazabilidad, reproducibilidad y separación de entornos exigidos por la normativa europea.  
-La arquitectura está diseñada siguiendo estándares enterprise, garantizando estabilidad, escalabilidad y gobernanza
+MIDAS — Sistema de Predicción para Restaurante
 
-La demo muestra cómo el sistema cumple los principios fundamentales del estándar:  
- - modularidad  
- - trazabilidad  
- - reproducibilidad  
- - estabilidad operativa  
- - explicabilidad de resultados  
- - arquitectura autosuficiente  
+Arquitectura Autosuficiente Certificada bajo OmniOps AI™
 
+MIDAS es un sistema construido siguiendo los principios del estándar corporativo OmniOps AI™.  
+Cumple los requisitos de seguridad, trazabilidad, reproducibilidad y separación de entornos exigidos por la normativa europea.  
+La arquitectura está diseñada siguiendo prácticas enterprise, garantizando estabilidad, escalabilidad y gobernanza.
 
----
-
-## 🎯 **¿Qué es MIDAS?**
-
-**MIDAS** es un sistema de predicción inteligente para restaurantes que ofrece:
-
-- **📊 Predicción de ventas diarias** con algoritmos dinámicos integrados
-- **👥 Cálculo de personal necesario** basado en demanda esperada
-- **🥬 Gestión de perecederos** con predicciones de compra óptimas
-- **🌤️ Factores climáticos** que impactan las ventas
-- **🎉 Gestión de eventos** con cálculo de impacto en negocio
-- **📈 Visualizaciones interactivas** con datos en tiempo real
-- **🏗️ Arquitectura escalable** siguiendo estándares enterprise
+La demo permite verificar cómo el sistema cumple los principios fundamentales del estándar:  
+- modularidad  
+- trazabilidad  
+- reproducibilidad  
+- estabilidad operativa  
+- explicabilidad  
+- arquitectura autosuficiente  
 
 ---
 
-## 🌐 **Demo en Vivo — Acceso Inmediato**
+1. ¿Qué es MIDAS?
 
-> **Prueba el sistema directamente sin instalación:**
+MIDAS es un sistema de predicción inteligente para restaurantes que ofrece:
 
-| Componente | URL en Producción | Descripción |
-|-----------|-------------------|-------------|
-| **🎯 Dashboard Principal** | [desirable-luck-production.up.railway.app](https://desirable-luck-production.up.railway.app) | **Sistema completo y funcional** |
-
-### 🚀 **Características del Sistema:**
-- **Predicciones dinámicas:** Algoritmos avanzados integrados
-- **Controles interactivos:** Interfaz intuitiva Streamlit
-- **Sin dependencias externas:** Sistema completamente autosuficiente
-- **Visualizaciones avanzadas:** Gráficos comparativos con Plotly
-- **Arquitectura modular:** Organización profesional escalable
+- Predicción de ventas diarias  
+- Cálculo de personal necesario  
+- Gestión de perecederos  
+- Factores climáticos integrados  
+- Gestión de eventos  
+- Visualizaciones interactivas  
+- Arquitectura escalable y autosuficiente  
 
 ---
 
-## ⚡ **Inicio Rápido — Desarrollo Local**
+2. Demo en Vivo
 
-### **Opción 1: Usar en producción (Recomendado)**
-```bash
-# Acceso directo sin instalación
-open https://desirable-luck-production.up.railway.app
-```
+Acceso directo sin instalación:  
+https://desirable-luck-production.up.railway.app
 
-### **Opción 2: Ejecutar localmente**
-```bash
-# 1. Clonar repositorio
+Características principales:  
+- Predicciones dinámicas  
+- Interfaz intuitiva  
+- Sin dependencias externas  
+- Visualizaciones avanzadas  
+- Arquitectura modular  
+
+---
+
+3. Inicio Rápido
+
+Opción 1: Usar en producción
+https://desirable-luck-production.up.railway.app
+
+Opción 2: Ejecutar localmente
+`
 git clone https://github.com/raquelmartinesbec-glitch/PROYECTO-MIDAS-DEMO.git
 cd PROYECTO-MIDAS-DEMO
-
-# 2. Instalar dependencias
 pip install -r requirements/requirements.txt
-
-# 3. Ejecutar usando script automatizado
 python scripts/run_local.py
+`
 
-# O directamente con Streamlit
-streamlit run src/dashboard/app.py --server.port 8501
-```
-
-**Acceder a:** http://localhost:8501
+Acceso local:  
+http://localhost:8501
 
 ---
 
-## 🏗️ **Arquitectura del Proyecto**
+4. Arquitectura del Proyecto
 
-### **Estructura Profesional:**
-```
+`
 PROYECTO-MIDAS-DEMO/
-├── 📁 src/                    # Código fuente principal
-│   ├── dashboard/             # Dashboard Streamlit
-│   │   ├── app.py            # Aplicación principal
-│   │   └── utils/            # Utilidades y helpers
-├── 📁 config/                 # Configuraciones centralizadas
-│   ├── railway.toml          # Configuración Railway
-│   └── .env.example          # Variables de entorno
-├── 📁 docs/                   # Documentación organizada
-│   ├── README.md             # Documentación principal
-│   ├── DEPLOY.md             # Guía de despliegue
-│   └── CHANGELOG.md          # Historial de cambios
-├── 📁 scripts/                # Herramientas de automatización
-│   ├── deploy.sh             # Script de despliegue
-│   └── run_local.py          # Ejecución local simplificada
-├── 📁 tests/                  # Framework de testing
-├── 📁 docker/                 # Containerización
-│   ├── Dockerfile            # Imagen optimizada
-│   └── streamlit_config.toml # Configuración Streamlit
-├── 📁 requirements/           # Gestión de dependencias
-│   └── requirements.txt      # Dependencias unificadas
-└── 📄 pyproject.toml          # Configuración moderna Python
-```
+├── src/
+│   ├── dashboard/
+│   │   ├── app.py
+│   │   └── utils/
+├── config/
+│   ├── railway.toml
+│   └── .env.example
+├── docs/
+│   ├── README.md
+│   ├── DEPLOY.md
+│   └── CHANGELOG.md
+├── scripts/
+│   ├── deploy.sh
+│   └── run_local.py
+├── tests/
+├── docker/
+│   ├── Dockerfile
+│   └── streamlit_config.toml
+├── requirements/
+│   └── requirements.txt
+└── pyproject.toml
+`
 
-### **Beneficios de la Nueva Arquitectura:**
-- **🎯 Modularidad:** Separación clara de responsabilidades
-- **📈 Escalabilidad:** Estructura preparada para crecimiento
-- **🛠️ Mantenibilidad:** Código organizado y documentado
-- **🚀 Automatización:** Scripts para tareas comunes
-- **🏢 Enterprise-ready:** Siguiendo mejores prácticas industriales
-
----
-
-## 🔧 **Cómo usar el sistema**
-
-### **Panel de Control (Sidebar):**
-- **📅 Fecha:** Selecciona el día para predicción
-- **🌤️ Clima:** Sol (+15% ventas), Nublado (neutral), Lluvia (-15% ventas)  
-- **📞 Reservas:** Número de reservas confirmadas
-- **🎉 Evento:** Activa si hay evento especial
-- **👥 Asistentes:** Personas esperadas al evento
-- **💰 Precio evento:** Precio promedio por persona
-
-### **Métricas Principales:**
-- **💰 Ventas estimadas:** Predicción en €
-- **👥 Personal necesario:** Número de empleados  
-- **🥬 Perecederos:** Compra recomendada en €
-
-### **Visualizaciones:**
-- **📊 Comparación de escenarios:** Diferentes condiciones
-- **📈 Gráficos dinámicos:** Barras comparativas por fecha
-- **⚙️ Información del algoritmo:** Factores considerados
+Beneficios:  
+- Modularidad  
+- Escalabilidad  
+- Mantenibilidad  
+- Automatización  
+- Preparado para entornos enterprise  
 
 ---
 
-## 🤖 **Algoritmo de Predicción Integrado**
+5. Uso del Sistema
 
-El sistema incluye lógica de predicción avanzada implementada en [`src/dashboard/app.py`](src/dashboard/app.py):
+Panel lateral:  
+- Fecha  
+- Clima  
+- Reservas  
+- Evento  
+- Asistentes  
+- Precio medio  
 
-### **Factores Base del Algoritmo:**
-- **🗺️ Temporales:** Día de semana, mes, estacionalidad, festividades
-- **🌤️ Climáticos:** Sol (+15%), nublado (neutral), lluvia (-15%)
-- **📞 Reservas:** Impacto lineal según número confirmado
-- **🎉 Eventos:** Boost dinámico según intensidad y asistencia esperada
-- **🎆 Estacionalidad:** Factores mensuales específicos ajustados
+Métricas principales:  
+- Ventas estimadas  
+- Personal necesario  
+- Perecederos recomendados  
 
-### **Métricas de Confianza:**
-- **💰 Ventas:** 92% precisión
-- **👥 Personal:** 88% precisión  
-- **🥬 Perecederos:** 90% precisión
-
-### **Funciones Clave:**
-```python
-# Implementadas en src/dashboard/app.py
-calculate_prediction()    # Algoritmo principal
-get_sample_predictions()  # Comparaciones
-apply_weather_factor()    # Factores climáticos
-```
+Visualizaciones:  
+- Comparación de escenarios  
+- Gráficos dinámicos  
+- Información del algoritmo  
 
 ---
 
-## 📊 **Stack Tecnológico**
+6. Algoritmo de Predicción
 
-### **Tecnologías Core:**
-- **🐍 Backend:** Python 3.11+
-- **🎨 Frontend:** Streamlit 1.28+
-- **📊 Visualizaciones:** Plotly 5.15+
-- **📈 Data Processing:** Pandas 2.0+
-- **🐳 Containerización:** Docker optimizado
-- **☁️ Deploy:** Railway.app
-- **⚙️ Config:** pyproject.toml moderno
+Factores utilizados:  
+- Temporales  
+- Climáticos  
+- Reservas  
+- Eventos  
+- Estacionalidad  
 
-### **Arquitectura del Sistema:**
-- **🏗️ Modular:** Separación clara src/config/docs
-- **⚡ Sin latencia:** Cálculos instantáneos integrados
-- **🔒 Sin dependencias externas:** Sistema autosuficiente
-- **🌐 Universal:** Acceso solo con navegador
-- **🔄 Tiempo real:** Predicciones dinámicas
-- **🛡️ Robusto:** Manejo de errores integrado
-- **📱 Responsive:** Interfaz adaptativa
+Métricas de confianza:  
+- Ventas: 92%  
+- Personal: 88%  
+- Perecederos: 90%  
+
+Funciones clave:
+`
+calculate_prediction()
+getsamplepredictions()
+applyweatherfactor()
+`
 
 ---
 
-## 🚀 **Despliegue y Automatización**
+7. Stack Tecnológico
 
-### **Despliegue Automático:**
-Ver [docs/DEPLOY.md](docs/DEPLOY.md) para instrucciones completas.
+- Python  
+- Streamlit  
+- Plotly  
+- Pandas  
+- Docker  
+- Railway  
+- pyproject.toml  
 
-```bash
-# Despliegue automático con script
+Arquitectura:  
+- Modular  
+- Sin dependencias externas  
+- Acceso universal  
+- Predicciones en tiempo real  
+- Manejo de errores integrado  
+- Interfaz adaptable  
+
+---
+
+8. Despliegue y Automatización
+
+Despliegue automático:
+`
 ./scripts/deploy.sh
+`
 
-# O manualmente en Railway
-1. Fork del repositorio en GitHub
-2. Conectar con Railway.app  
-3. Usar config/railway.toml
-4. ¡Deploy automático!
-```
-
-### **Scripts de Desarrollo:**
-```bash
-# Ejecutar localmente (automático)
+Ejecución local:
+`
 python scripts/run_local.py
-
-# Ejecutar directamente
 streamlit run src/dashboard/app.py --server.port 8501
+`
 
-# Instalar dependencias
-pip install -r requirements/requirements.txt
-
-# Ver logs y estructura
-tree /f src/
-```
-
-### **Docker (Opcional):**
-```bash
-# Build imagen local
+Docker:
+`
 docker build -f docker/Dockerfile -t midas-dashboard .
-
-# Ejecutar container
 docker run -p 8501:8501 midas-dashboard
-```
+`
 
 ---
 
-## ❓ **Preguntas Frecuentes (FAQ)**
+9. Mapeo a los 6 Pilares del Estándar OmniOps AI™
 
-### **🗘️ ¿Necesito configurar una base de datos?**
-**No.** El sistema es completamente autosuficiente sin dependencias externas.
+1. Gobernanza
+Dónde se demuestra:  
+- Panel lateral con parámetros controlados  
+- Validaciones en cada entrada  
+- Lógica centralizada en calculate_prediction()  
 
-### **🌐 ¿Requiere APIs externas?**  
-**No.** Toda la lógica está integrada en el dashboard.
-
-### **⚙️ ¿Puedo personalizar los algoritmos?**
-**Sí.** Edita `calculate_prediction()` en `src/dashboard/app.py`.
-
-### **🔌 ¿Funciona offline?**
-**Sí.** Una vez cargado, funciona completamente sin conexión.
-
-### **🐍 ¿Qué versión de Python necesito?**
-**Python 3.9+** (recomendado 3.11+). Ver `pyproject.toml`.
-
-### **📱 ¿Es responsive en móvil?**
-**Sí.** Streamlit se adapta automáticamente a dispositivos móviles.
-
-### **🛠️ ¿Cómo contribuir al proyecto?**
-Ver [docs/README.md](docs/README.md) para guías de contribución.
+Artefactos visibles:  
+- Controles de entrada  
+- Reglas de negocio consistentes  
 
 ---
 
-## 📞 **Soporte y Documentación**
+2. Seguridad y Aislamiento
+Dónde se demuestra:  
+- Sistema autosuficiente  
+- Sin bases de datos externas  
+- Sin llamadas a APIs  
 
-### **📄 Documentación Completa:**
-- **🏰 Principal:** [docs/README.md](docs/README.md)
-- **🚀 Despliegue:** [docs/DEPLOY.md](docs/DEPLOY.md)
-- **📅 Cambios:** [docs/CHANGELOG.md](docs/CHANGELOG.md)
-- **⚙️ Configuración:** [config/](config/)
-
-### **🔗 Enlaces Útiles:**
-- **🎯 Demo en vivo:** [Dashboard MIDAS](https://desirable-luck-production.up.railway.app)
-- **📝 Issues/Soporte:** [GitHub Issues](https://github.com/raquelmartinesbec-glitch/PROYECTO-MIDAS-DEMO/issues)
-- **🔥 Repositorio:** [GitHub Repo](https://github.com/raquelmartinesbec-glitch/PROYECTO-MIDAS-DEMO)
-
-### **👥 Contacto Técnico:**
-Para consultas de desarrollo, arquitectura o demostraciones personalizadas.
+Artefactos visibles:  
+- Arquitectura contenida  
+- Ejecución offline  
 
 ---
 
-**🎉 ¡Proyecto MIDAS - Arquitectura Enterprise con Predicciones Inteligentes!**  
-*✨ Sistema completamente reorganizado siguiendo mejores prácticas de ingeniería de software*
+3. Reproducibilidad
+Dónde se demuestra:  
+- Predicciones deterministas  
+- Código centralizado  
+- Scripts estandarizados  
+
+Artefactos visibles:  
+- scripts/run_local.py  
+- calculate_prediction()  
+
+---
+
+4. Trazabilidad
+Dónde se demuestra:  
+- Factores mostrados en pantalla  
+- Impacto de cada parámetro visible  
+
+Artefactos visibles:  
+- Información del algoritmo  
+- Comparación de escenarios  
+
+---
+
+5. Explicabilidad
+Dónde se demuestra:  
+- Factores climáticos, reservas y eventos explicados  
+- Métricas de confianza visibles  
+
+Artefactos visibles:  
+- Desglose de factores  
+- Métricas de precisión  
+
+---
+
+6. Estabilidad Operativa
+Dónde se demuestra:  
+- Cálculos instantáneos  
+- Sin dependencias externas  
+- Arquitectura modular  
+
+Artefactos visibles:  
+- Dockerfile  
+- Configuración Railway  
+- Scripts de despliegue  
+
+---
+
+10. Narrativa del Caso de Uso
+
+Una empresa quiere desplegar una aplicación interna de predicción para mejorar la planificación diaria.  
+OmniOps AI™ garantiza que:
+
+- el sistema es seguro  
+- los datos están aislados  
+- las predicciones son reproducibles  
+- las decisiones son trazables  
+- los resultados son explicables  
+- la operación es estable  
+
+MIDAS muestra cómo se vería un módulo interno certificado bajo este estándar.
+
+---
+
+11. Limitaciones Intencionadas de la Demo
+
+Esta demo está diseñada únicamente para mostrar un módulo autosuficiente bajo OmniOps AI™.  
+Por motivos de seguridad y propiedad intelectual, la demo presenta las siguientes limitaciones:
+
+- No utiliza datos reales ni históricos.  
+- No incluye modelos entrenados con datos corporativos.  
+- No incorpora bases vectoriales ni embeddings.  
+- No muestra la arquitectura completa del estándar OmniOps AI™.  
+- No expone flujos de gobernanza interna ni certificación.  
+- No representa el rendimiento final en producción.  
+- No permite integraciones externas.  
+
+---
+
+12. Qué No Incluye MIDAS
+
+MIDAS es un módulo demostrativo.  
+No incluye:
+
+- El estándar OmniOps AI™ completo  
+- Fases, criterios, patrones o artefactos del estándar  
+- Documentación interna de gobernanza o auditoría  
+- Procesos de despliegue corporativo  
+- Modelos avanzados de IA entrenados  
+- Arquitecturas multi‑entorno o multi‑tenant  
+- Mecanismos de observabilidad avanzada  
+- Controles normativos completos  
+
+---
+
+13. Documentación y Soporte
+
+Documentación completa en /docs.  
+Repositorio: GitHub.  
+Demo: Railway.
