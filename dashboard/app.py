@@ -359,8 +359,8 @@ def calculate_prediction(prediction_type, date_str, weather, reservations, has_e
         seasonal_boost = base_value * (seasonal_factors[month] - 1.0)
         
         # Factor clima
-        weather_factors = {"sol": 1.15, "nublado": 1.0, "lluvia": 0.85}
-        weather_boost = base_value * (weather_factors.get(weather, 1.0) - 1.0)
+        weather_factors = {"sol": 1.15, "nublado": 1.0, "lluvia": 0.85, "nieve": 0.75}
+        weather_boost = base_value * (weather_factors.get(weather.lower(), 1.0) - 1.0)
         
         # Factor reservas
         reservas_boost = max(0, (reservations - 15) * (base_value * 0.02))
@@ -486,13 +486,35 @@ if 'current_predictions' not in st.session_state:
 # ── Manejar clic del botón de predicción ──────────────────────────────────────
 if predict_btn:
     st.session_state.predictions_generated = True
+    # Convertir fecha al formato correcto
+    prediction_date_str = prediction_date.strftime("%Y-%m-%d")
+    
     # Generar nuevas predicciones
+    sales_pred = calculate_prediction("sales", prediction_date_str, weather.lower(), reservations, has_event, event_people, event_price)
+    staff_pred = calculate_prediction("staff", prediction_date_str, weather.lower(), reservations, has_event, event_people, event_price)
+    perishables_pred = calculate_prediction("perishables", prediction_date_str, weather.lower(), reservations, has_event, event_people, event_price)
+    
     st.session_state.current_predictions = {
-        'sales': calculate_prediction("sales", prediction_date, weather, reservations, has_event, event_people, event_price),
-        'staff': calculate_prediction("staff", prediction_date, weather, reservations, has_event, event_people, event_price),
-        'perishables': calculate_prediction("perishables", prediction_date, weather, reservations, has_event, event_people, event_price)
+        'sales': sales_pred,
+        'staff': staff_pred,
+        'perishables': perishables_pred
     }
+    
+    # Debug info
+    with st.expander("🔍 Debug - Información de cálculo", expanded=False):
+        st.write(f"📅 Fecha: {prediction_date_str}")
+        st.write(f"🌤️ Clima: {weather}")
+        st.write(f"📋 Reservas: {reservations}")
+        st.write(f"🎉 Evento: {has_event}")
+        if sales_pred:
+            st.write(f"💰 Ventas calculadas: €{sales_pred['value']:.0f}")
+        if staff_pred:
+            st.write(f"👥 Personal calculado: {staff_pred['value']:.0f}")
+        if perishables_pred:
+            st.write(f"🥬 Perecederos calculados: €{perishables_pred['value']:.0f}")
+    
     st.success("✅ Predicciones generadas exitosamente")
+    st.info(f"📅 Predicciones para {prediction_date_str} | 🌤️ {weather} | 📋 {reservations} reservas")
 
 # ── Sección de predicciones en tiempo real ─────────────────────────────────────
 st.header("📊 Predicciones del Día")
@@ -518,11 +540,15 @@ with col1:
     st.subheader("💰 Ventas")
     if st.session_state.predictions_generated and st.session_state.current_predictions.get('sales'):
         sales_prediction = st.session_state.current_predictions['sales']
-        st.metric(
-            "Ventas estimadas",
-            f"€{sales_prediction['value']:.0f}",
-            f"Confianza: {sales_prediction['confidence']:.0%}"
-        )
+        if sales_prediction:  # Verificar que la predicción no sea None
+            st.metric(
+                "Ventas estimadas",
+                f"€{sales_prediction['value']:.0f}",
+                f"Confianza: {sales_prediction['confidence']:.0%}"
+            )
+        else:
+            st.error("❌ Error generando predicción de ventas")
+            st.metric("Ventas estimadas", "€2,450", "Confianza: 85%")
     else:
         st.metric("Ventas estimadas", "€2,450", "Confianza: 85%")
         st.caption("🔮 Presiona 'Generar Predicción' para actualizar")
@@ -531,11 +557,15 @@ with col2:
     st.subheader("👥 Personal")
     if st.session_state.predictions_generated and st.session_state.current_predictions.get('staff'):
         staff_prediction = st.session_state.current_predictions['staff']
-        st.metric(
-            "Personal necesario", 
-            f"{staff_prediction['value']:.0f} personas",
-            f"Confianza: {staff_prediction['confidence']:.0%}"
-        )
+        if staff_prediction:  # Verificar que la predicción no sea None
+            st.metric(
+                "Personal necesario", 
+                f"{staff_prediction['value']:.0f} personas",
+                f"Confianza: {staff_prediction['confidence']:.0%}"
+            )
+        else:
+            st.error("❌ Error generando predicción de personal")
+            st.metric("Personal necesario", "8 personas", "Confianza: 78%")
     else:
         st.metric("Personal necesario", "8 personas", "Confianza: 78%")
         st.caption("🔮 Presiona 'Generar Predicción' para actualizar")
@@ -544,11 +574,15 @@ with col3:
     st.subheader("🥬 Perecederos")
     if st.session_state.predictions_generated and st.session_state.current_predictions.get('perishables'):
         perishables_prediction = st.session_state.current_predictions['perishables']
-        st.metric(
-            "Compra perecederos",
-            f"€{perishables_prediction['value']:.0f}",
-            f"Confianza: {perishables_prediction['confidence']:.0%}"
-        )
+        if perishables_prediction:  # Verificar que la predicción no sea None
+            st.metric(
+                "Compra perecederos",
+                f"€{perishables_prediction['value']:.0f}",
+                f"Confianza: {perishables_prediction['confidence']:.0%}"
+            )
+        else:
+            st.error("❌ Error generando predicción de perecederos")
+            st.metric("Compra perecederos", "€420", "Confianza: 82%")
     else:
         st.metric("Compra perecederos", "€420", "Confianza: 82%")
         st.caption("🔮 Presiona 'Generar Predicción' para actualizar")
