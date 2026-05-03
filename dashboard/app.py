@@ -1,9 +1,9 @@
 
 # ══════════════════════════════════════════════════════════════════════════════
 # MIDAS Dashboard - Sistema de Predicción de Restaurante
-# Versión: 2.1.0-FINAL - Railway cache bypass 
-# Deploy timestamp: 2026-04-30 14:00 UTC
-# COMMIT HASH: ef8bb79 - FORCE RAILWAY REBUILD
+# Versión: 3.0.0-FINAL - RAILWAY FORCE REBUILD 2026-05-03
+# CRITICAL FIX: Interactive predictions with session state
+# DEPLOYMENT: Forced rebuild to clear Railway cache completely
 # ══════════════════════════════════════════════════════════════════════════════
 
 import streamlit as st
