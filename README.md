@@ -298,7 +298,7 @@ No incluye:
 - Documentación interna de gobernanza o auditoría  
 - Procesos de despliegue corporativo  
 - Modelos avanzados de IA entrenados  
-- Arquitecturas multi‑entorno o multi‑tenant  
+- Arquitecturas multi‑entorno 
 - Mecanismos de observabilidad avanzada  
 - Controles normativos completos  
 
